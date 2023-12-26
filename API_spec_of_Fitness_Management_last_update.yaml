@@ -1,0 +1,2400 @@
+openapi: 3.0.3
+info:
+  title: Fitness Management API Spec
+  description: |-
+    API spec of Fitness Management
+  termsOfService: https://fitness-management.co.th
+  version: 1.0.0
+servers:
+  - url: https://fitness-management.co.th/api/v1
+  
+tags:
+  - name: users
+    description: users in fitness-management
+  - name: roles
+    description: roles user in fitness-management
+  - name: users has roles
+    description: users has roles in fitness-management
+  - name: permissions
+    description: permissions in fitness-management
+  - name: roles has permissions
+    description: roles has permissions in fitness-management
+  - name: users has permissions
+    description: users has permissions in fitness-management
+  - name: services
+    description: services in fitness-management
+  - name: services has users
+    description: services has users in fitness-management
+  - name: classes
+    description: classes in fitness-management
+  - name: personal_trainers
+    description: personal_trainer in fitness-management
+  - name: orders
+    description: orders in fitness-management
+  - name: order_items
+    description: order_items in fitness-management
+  - name: order_payments
+    description: order_payments in fitness-management
+  - name: booking
+    description: booking in fitness-management
+  - name: booking_classes
+    description: booking_classes in fitness-management
+  - name: booking_personal_trainer
+    description: booking_personal_trainer in fitness-management
+      
+paths:
+# User
+# create users
+  /users:
+    post:
+      tags:
+        - users
+      summary: Create Users
+      description: Create Users
+      operationId: createUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Users'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Users'
+
+# get alls list users
+    get:
+      tags:
+        - users
+      summary: Get All List Users
+      description: Get All List Users
+      operationId: GetAllListUsers
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Users'
+
+# update user specific 
+  /users/{id}:
+    put:
+      tags:
+        - users
+      summary: Update Users by Users ID
+      description: Update Users by Users ID
+      operationId: updateUsersByUsersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Users'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        default:
+          description: successful operation
+
+# get users specific
+    get:
+      tags:
+        - users
+      summary: Get Users by Users ID
+      description: Get by user_id
+      operationId: getUsersByUsersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete users specific
+    delete:
+          tags:
+            - users
+          summary: Delete Users by Users ID
+          description: Delete Users by Users ID
+          operationId: deleteUsesByUsersID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found  
+              
+# Roles
+# create roles
+  /roles:
+    post:
+      tags:
+        - roles
+      summary: Create Roles
+      description: Create Roles
+      operationId: createRoles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Roles'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Roles'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Roles'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roles'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Roles'
+
+# get all list roles
+    get:
+      tags:
+        - roles
+      summary: Get All List Roles
+      description: Get All List Roles
+      operationId: GetAllListRoles
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roles'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Roles'
+                
+# update roles specific
+  /roles/{id}:
+    put:
+      tags:
+        - roles
+      summary: Update Roles Specific by Roles ID
+      description: Update Roles by Roles ID
+      operationId: updateRolesByRolesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Roles'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Roles'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Roles'
+      responses:
+        default:
+          description: successful operation
+
+# get roles specific
+    get:
+      tags:
+        - roles
+      summary: Get Roles Specific by Roles ID
+      description: Get Roles by Roles ID
+      operationId: getRolesByRolesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roles'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Roles'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete roles specific
+    delete:
+          tags:
+            - roles
+          summary: Delete Roles Specific by Roles ID
+          description: Delete by Roles ID.
+          operationId: deleteRolesByRolesID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found      
+
+# user has roles
+  /users/roles:
+    # get alls list users has roles
+    get:
+      tags:
+        - users has roles
+      summary: Get All List Users has Roles
+      description: Get All List Users has Roles
+      operationId: GetAllListUsershasRoles
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users_has_roles"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/users_has_roles"
+
+  /users/roles/{user_id}:
+    # get users has roles specific
+    get:
+      tags:
+        - users has roles
+      summary: Get User has Roles Specific by User ID
+      description: Get User has Roles Specific by User ID
+      operationId: getUserhasRolesSpecificByUserID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users_has_roles"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/users_has_roles"
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+
+    # delete users has roles specific
+    delete:
+      tags:
+        - users has roles
+      summary: Delete Users has Roles Specific by Users ID
+      description: Delete Users has Roles Specific by Users ID.
+      operationId: deleteUserhasRolesSpecificByUsersID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: successful operation
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+              
+# Permissions
+# create permissions
+  /permissions:
+    post:
+      tags:
+        - permissions
+      summary: Create Permissions
+      description: Create Permissions
+      operationId: createPermissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+
+# get alls list permissions
+    get:
+      tags:
+        - permissions
+      summary: Get All List Permissions
+      description: Get All List Permissions
+      operationId: GetAllListPermissions
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+
+# update permissions specific 
+  /permissions/{id}:
+    put:
+      tags:
+        - permissions
+      summary: Update Specific Permissions by ID
+      description: Update Permissions Specific by Permissions ID
+      operationId: updatePermissionsSpecificByPermissionsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permissions'
+      responses:
+        default:
+          description: successful operation
+
+# get permissions specific
+    get:
+      tags:
+        - permissions
+      summary: Get Specific Permissions by Permissions ID
+      description: Get Permissions Specific by Permissions ID
+      operationId: getPermissionsSpecificByPermissionsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete permissions specific
+    delete:
+          tags:
+            - permissions
+          summary: Delete Specific Permissions by Permissions ID
+          description: Delete Permissions by Permissions ID.
+          operationId: deletePermissionsSpecificByPermissionsID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+              
+# roles has permissions
+  /roles/permissions:
+    # get alls list roles has permissions
+    get:
+      tags:
+        - roles has permissions
+      summary: Get All List Roles has Permissions
+      description: Get All List Roles has Permissions
+      operationId: GetAllListRoleshasPermissions
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/roles_has_permissions"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/roles_has_permissions"
+
+  /roles/permissions/{role_id}:
+    # get roles has permissions specific
+    get:
+      tags:
+        - roles has permissions
+      summary: Get Roles has Permissions Specific by Roles ID
+      description: Get Roles has Permissions Specific by Roles ID
+      operationId: getRoles has PermissionsSpecificByRolesID
+      parameters:
+        - name: role_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/roles_has_permissions"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/roles_has_permissions"
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+
+    # delete roles has permissions specific
+    delete:
+      tags:
+        - roles has permissions
+      summary: Delete Roles has Permissions Specific by Roles ID
+      description: Delete Roles has Permissions Specific by Roles ID.
+      operationId: deleteRoleshasPermissionsSpecificByRolesID
+      parameters:
+        - name: role_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: successful operation
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+
+# users_has_permissions
+  /users/permissions:
+    # get alls list users has permissions
+    get:
+      tags:
+        - users has permissions
+      summary: Get All List Userss has Permissions
+      description: Get All List Users has Permissions
+      operationId: GetAllListUsershasPermissions
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users_has_permissions"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/users_has_permissions"
+
+  /users/permissions/{user_id}:
+    # get roles has permissions specific
+    get:
+      tags:
+        - users has permissions
+      summary: Get Users has Permissions Specific by Users ID
+      description: Get Users has Permissions Specific by Users ID
+      operationId: getUsershasPermissionsSpecificByUsersID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users_has_permissions"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/users_has_permissions"
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+
+    # delete roles has permissions specific
+    delete:
+      tags:
+        - users has permissions
+      summary: Delete Users has Permissions Specific by Users ID
+      description: Delete Users has Permissions Specific by Users ID
+      operationId: deleteUsershasPermissionsSpecificByUsersID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: successful operation
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+          
+#servies
+  /services:
+  
+# create services
+    post:
+      tags:
+        - services
+      summary: Create Services
+      description: Create Services
+      operationId: createServices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Services'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Services'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Services'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Services'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Services'
+
+# get alls list services
+    get:
+      tags:
+        - services
+      summary: Get All List Services
+      description: Get All List Services
+      operationId: GetAllListServices
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Services'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Services'
+
+# update services specific 
+  /services/{id}:
+    put:
+      tags:
+        - services
+      summary: Update Services by Services ID
+      description: Update Services by Services ID
+      operationId: updateServicesByServicesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Services'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Services'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Services'
+      responses:
+        default:
+          description: successful operation
+
+# get services specific
+    get:
+      tags:
+        - services
+      summary: Get Services by Services ID
+      description: Get Services by Services ID
+      operationId: getServicesByServicesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Services'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Services'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete services specific
+    delete:
+          tags:
+            - services
+          summary: Delete Services by Services ID
+          description: Delete Services by Services ID
+          operationId: deleteServicesByServicesID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+
+# service has user
+  /services/users:
+    # get alls list services has users
+    get:
+      tags:
+        - services has users
+      summary: Get All List Services has Users
+      description: Get All List Servicess has Users
+      operationId: GetAllListServiceshasUsers
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/services_has_users"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/services_has_users"
+
+  /services/users/{user_id}:
+    # get services has users specific
+    get:
+      tags:
+        - services has users
+      summary: Get Services has Users Specific by User ID
+      description: Get Services has Users Specific by User ID
+      operationId: getServiceshasUsersSpecificByUserID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/services_has_users"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/services_has_users"
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+
+    # delete services has users specific
+    delete:
+      tags:
+        - services has users
+      summary: Delete Services has Users Specific by Users ID
+      description: Delete Services has Users Specific by Users ID.
+      operationId: deleteServiceshasUsersSpecificByUsersID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: successful operation
+        "400":
+          description: Invalid ID
+        "404":
+          description: ID not found
+            
+#classes
+  /classes:
+  
+# create classes
+    post:
+      tags:
+        - classes
+      summary: Create Class
+      description: Create Classes
+      operationId: createClass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Classes'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Classes'
+
+# get alls list classes
+    get:
+      tags:
+        - classes
+      summary: Get All List Classes
+      description: Get All List Classes
+      operationId: GetAllListClasses
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Classes'
+
+# update classes specific 
+  /classes/{id}:
+    put:
+      tags:
+        - classes
+      summary: Update Classes by Classes ID
+      description: Update Classes by Classes ID
+      operationId: updateClassesByClassesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Classes'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        default:
+          description: successful operation
+
+# get classes specific
+    get:
+      tags:
+        - classes
+      summary: Get Classes by Classes ID
+      description: Get Classes by Classes ID
+      operationId: getClassesByClassesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Classes'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete classes specific
+    delete:
+          tags:
+            - classes
+          summary: Delete Classes by Classes ID
+          description: Delete Classes by Classes ID
+          operationId: deleteClassesByClassesID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+              
+#personal_trainers
+  /personal_trainers:
+  
+# create personal_trainers
+    post:
+      tags:
+        - personal_trainers
+      summary: Create personal_trainer
+      description: Create personal_trainer
+      operationId: createpersonal_trainer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'
+
+# get alls list personal_trainers
+    get:
+      tags:
+        - personal_trainers
+      summary: Get All List personal_trainers
+      description: Get All List personal_trainers
+      operationId: GetAllListpersonal_trainers
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'
+
+# update personal_trainers specific 
+  /personal_trainers/{id}:
+    put:
+      tags:
+        - personal_trainers
+      summary: Update personal_trainers by personal_trainers ID
+      description: Update Classes by personal_trainers ID
+      operationId: updatepersonal_trainersBypersonal_trainersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/personal_trainers'
+      responses:
+        default:
+          description: successful operation
+
+# get personal_trainers specific
+    get:
+      tags:
+        - personal_trainers
+      summary: Get personal_trainers by personal_trainers ID
+      description: Get personal_trainers by personal_trainers ID
+      operationId: getpersonal_trainersBypersonal_trainersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/personal_trainers'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete personal_trainers specific
+    delete:
+          tags:
+            - personal_trainers
+          summary: Delete personal_trainers by personal_trainers ID
+          description: Delete personal_trainers by personal_trainers ID
+          operationId: deletepersonal_trainersBypersonal_trainersID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+ 
+ 
+#orders
+  /orders:
+  
+# create orders
+    post:
+      tags:
+        - orders
+      summary: Create orders
+      description: Create orders
+      operationId: createorders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/orders'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/orders'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/orders'
+
+# get alls list orders
+    get:
+      tags:
+        - orders
+      summary: Get All List orders
+      description: Get All List orders
+      operationId: GetAllListorders
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/orders'
+
+# update orders specific 
+  /orders/{id}:
+    put:
+      tags:
+        - orders
+      summary: Update orders by orders ID
+      description: Update orders by orders ID
+      operationId: updateordersByordersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orders'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/orders'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/orders'
+      responses:
+        default:
+          description: successful operation
+
+# get orders specific
+    get:
+      tags:
+        - orders
+      summary: Get orders by orders ID
+      description: Get orders by orders ID
+      operationId: getordersByordersID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orders'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/orders'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete orders specific
+    delete:
+          tags:
+            - orders
+          summary: Delete orders by orders ID
+          description: Delete orders by orders ID
+          operationId: deleteordersByordersID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+ 
+ 
+ #order_items
+  /order_items:
+  
+# create order_items
+    post:
+      tags:
+        - order_items
+      summary: Create order_items
+      description: Create order_items
+      operationId: createorder_items
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_items'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/order_items'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/order_items'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_items'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_items'
+
+# get alls list order_items
+    get:
+      tags:
+        - order_items
+      summary: Get All List order_items
+      description: Get All List order_items
+      operationId: GetAllListorder_items
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_items'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_items'
+
+# update order_items specific 
+  /order_items/{id}:
+    put:
+      tags:
+        - order_items
+      summary: Update order_items by order_items ID
+      description: Update order_items by order_items ID
+      operationId: updateorder_itemsByorder_itemsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_items'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/order_items'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/order_items'
+      responses:
+        default:
+          description: successful operation
+
+# get order_items specific
+    get:
+      tags:
+        - order_items
+      summary: Get order_items by order_items ID
+      description: Get order_items by order_items ID
+      operationId: getorder_itemsByorder_itemsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_items'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_items'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete order_items specific
+    delete:
+          tags:
+            - order_items
+          summary: Delete order_items by order_items ID
+          description: Delete order_items by order_items ID
+          operationId: deleteorder_itemsByorder_itemsID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+              
+              
+
+ #order_payments
+  /order_payments:
+  
+# create order_payments
+    post:
+      tags:
+        - order_payments
+      summary: Create order_payments
+      description: Create order_payments
+      operationId: createorder_payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_payments'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_payments'
+
+# get alls list order_payments
+    get:
+      tags:
+        - order_payments
+      summary: Get All List order_payments
+      description: Get All List order_payments
+      operationId: GetAllListorder_payments
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_payments'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_payments'
+
+# update order_payments specific 
+  /order_payments/{id}:
+    put:
+      tags:
+        - order_payments
+      summary: Update order_payments by order_payments ID
+      description: Update order_payments by order_payments ID
+      operationId: updateorder_paymentsByorder_paymentsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/order_payments'
+      responses:
+        default:
+          description: successful operation
+
+# get order_payments specific
+    get:
+      tags:
+        - order_payments
+      summary: Get order_payments by order_payments ID
+      description: Get order_payments by order_payments ID
+      operationId: getorder_paymentsByorder_paymentsID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/order_payments'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/order_payments'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete order_payments specific
+    delete:
+          tags:
+            - order_payments
+          summary: Delete order_payments by order_payments ID
+          description: Delete order_payments by order_payments ID
+          operationId: deleteorder_paymentsByorder_paymentsID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+
+#booking
+  /booking:
+  
+# create booking
+    post:
+      tags:
+        - booking
+      summary: Create booking
+      description: Create booking
+      operationId: createbooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking'
+
+# get alls list booking
+    get:
+      tags:
+        - booking
+      summary: Get All List booking
+      description: Get All List booking
+      operationId: GetAllListbooking
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking'
+
+# update booking specific 
+  /booking/{id}:
+    put:
+      tags:
+        - booking
+      summary: Update booking by booking ID
+      description: Update booking by booking ID
+      operationId: updatebookingBybookingID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking'
+      responses:
+        default:
+          description: successful operation
+
+# get booking specific
+    get:
+      tags:
+        - booking
+      summary: Get booking by booking ID
+      description: Get booking by booking ID
+      operationId: getbookingBybookingID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete booking specific
+    delete:
+          tags:
+            - booking
+          summary: Delete booking by booking ID
+          description: Delete booking by booking ID
+          operationId: deletebookingBybookingID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+              
+
+#booking_classes
+  /booking_classes:
+  
+# create booking_classes
+    post:
+      tags:
+        - booking_classes
+      summary: Create booking_classes
+      description: Create booking_classes
+      operationId: createbooking_classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking_classes'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking_classes'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking_classes'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_classes'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_classes'
+
+# get alls list booking_classes
+    get:
+      tags:
+        - booking_classes
+      summary: Get All List booking_classes
+      description: Get All List booking_classes
+      operationId: GetAllListbooking_classes
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_classes'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_classes'
+
+# update booking_classes specific 
+  /booking_classes/{id}:
+    put:
+      tags:
+        - booking_classes
+      summary: Update booking_classes by booking_classes ID
+      description: Update booking_classes by booking_classes ID
+      operationId: updatebooking_classesBybooking_classesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking'
+      responses:
+        default:
+          description: successful operation
+
+# get booking_classes specific
+    get:
+      tags:
+        - booking_classes
+      summary: Get booking_classes by booking_classes ID
+      description: Get booking_classes by booking_classes ID
+      operationId: getbooking_classesBybooking_classesID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_classes'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_classes'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete booking_classes specific
+    delete:
+          tags:
+            - booking_classes
+          summary: Delete booking_classes by booking_classes ID
+          description: Delete booking_classes by booking_classes ID
+          operationId: deletebooking_classesBybooking_classesID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+              
+
+#booking_personal_trainer
+  /booking_personal_trainer:
+  
+# create booking_personal_trainer
+    post:
+      tags:
+        - booking_personal_trainer
+      summary: Create booking_personal_trainer
+      description: Create booking_personal_trainer
+      operationId: createbooking_personal_trainer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'
+
+# get alls list booking_personal_trainer
+    get:
+      tags:
+        - booking_personal_trainer
+      summary: Get All List booking_personal_trainer
+      description: Get All List booking_personal_trainer
+      operationId: GetAllListbooking_personal_trainer
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'
+
+# update booking_personal_trainer specific 
+  /booking_personal_trainer/{id}:
+    put:
+      tags:
+        - booking_personal_trainer
+      summary: Update booking_personal_trainer by booking_personal_trainer ID
+      description: Update booking_personal_trainer by booking_personal_trainer ID
+      operationId: updatebooking_personal_trainerBybooking_personal_trainerID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/booking_personal_trainer'
+      responses:
+        default:
+          description: successful operation
+
+# get booking_personal_trainer specific
+    get:
+      tags:
+        - booking_personal_trainer
+      summary: Get booking_personal_trainer by booking_personal_trainer ID
+      description: Get booking_personal_trainer by booking_personal_trainer ID
+      operationId: getbooking_personal_trainerBybooking_personal_trainerID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/booking_personal_trainer'
+        '400':
+          description: Invalid ID
+        '404':
+          description: ID not found
+    
+# delete booking_personal_trainer specific
+    delete:
+          tags:
+            - booking_personal_trainer
+          summary: Delete booking_personal_trainer by booking_personal_trainer ID
+          description: Delete booking_personal_trainer by booking_personal_trainer ID
+          operationId: deletebooking_personal_trainerBybooking_personal_trainerID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: integer
+                format: int64
+          responses:
+            default:
+              description: successful operation
+            '400':
+              description: Invalid ID 
+            '404':
+              description: ID not found
+
+components:
+  schemas:
+  
+    Users:
+      required:
+        - id
+        - firstname
+        - lastname
+        - id_card
+        - email
+        - phone_number
+        - address
+        - sex
+        - image_url
+      type: object 
+      properties:
+        id: 
+          type: integer
+          format: int64
+          example: 10
+        firstname: 
+          type: string 
+          example: peempot
+        lastname: 
+          type: string 
+          example: padasitipoom
+        id_card:
+          type: string
+          example: 12345678543-2
+        email:
+          type: string 
+          format: email
+          example: peempot@gmail.com
+        phone_number: 
+          type: string 
+          example: '0999999999'
+        sex:
+          type: string
+          enum:
+            - male
+            - female
+        image_url:
+          type: string 
+          example: 'https://stream_cloud/oneplatform/user/image/peempot10'
+
+    Roles:
+      required:
+        - id
+        - name
+        - description
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        name:
+          type: string
+          example: Member
+          
+    users_has_roles:
+      required:
+        - users_id
+        - roles_id
+      type: object
+      properties:
+        users_id:
+          $ref: "#/components/schemas/Users"
+        roles_id:
+          $ref: "#/components/schemas/Roles"
+          
+    Permissions:
+      required:
+        - id
+        - description
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 03
+        description:
+          type: string
+          example: R W V D
+          
+    roles_has_permissions:
+      required:
+        - roles_id
+        - permissions_id
+      type: object
+      properties:
+        roles_id:
+          $ref: "#/components/schemas/Roles"
+        permissions_id:
+          $ref: "#/components/schemas/Permissions"
+          
+    users_has_permissions:
+      required:
+        - users_id
+        - permissions_id
+      type: object
+      properties:
+        users_id:
+          $ref: "#/components/schemas/Users"
+        permissions_id:
+          $ref: "#/components/schemas/Permissions"
+    
+    Services:
+      required:
+        - id
+        - name
+        - description
+        - price
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 03
+        name:
+          type: string
+          example: 1 Month
+        description:
+          type: string
+          example: R W V D
+        price:
+          type: number
+          format: float
+          example: 1,999
+          
+    services_has_users:
+      required:
+        - services_id
+        - users_id
+      type: object
+      properties:
+        services_id:
+          $ref: "#/components/schemas/Services"
+        users_id:
+          $ref: "#/components/schemas/Users"
+    
+    Classes:
+      required:
+        - id
+        - user_id
+        - name
+        - description
+        - motivations
+        - intensity
+        - minute
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 03
+        users_id:
+          $ref: "#/components/schemas/Users"
+        name:
+          type: string
+          example: Boxing
+        description:
+          type: string
+          example: ชกมวย
+        motivations:
+          type: string
+          enum: 
+            - lean
+            - performance 
+            - strong
+            - wellbeig
+        intensity:
+          type: string
+          enum: 
+            - low
+            - medium
+            - high
+        minute:
+          type: integer
+          enum: 
+            - 30
+            - 45
+            - 60
+            - 90
+            
+    personal_trainers:
+      required:
+        - id
+        - user_id
+        - description
+        - motivations
+        - minute
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        users_id:
+          $ref: "#/components/schemas/Users"
+        description:
+          type: string
+          example: เทรนโปรแกรมสำหรับนักกีฬา
+        motivations:
+          type: string
+          enum: 
+            - lean
+            - performance 
+            - strong
+            - wellbeig
+        minute:
+          type: integer
+          enum: 
+            - 30
+            - 45
+            - 60
+            - 90
+            
+    orders:
+      required:
+        - id
+        - user_id
+        - total
+        - vat
+        - total_vat
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        users_id:
+          $ref: "#/components/schemas/Users"
+        total:
+          type: number
+          format: float
+          example: 5,999
+        vat:
+          type: number
+          format: float
+          example: 999
+        total_vat:
+          type: number
+          format: float
+          example: 6998
+          
+    order_items:
+      required:
+        - id
+        - order_id
+        - service_id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        order_id:
+          $ref: "#/components/schemas/Orders"
+        service_id:
+          $ref: "#/components/schemas/Services"
+    
+    order_payments:
+      required:
+        - id
+        - order_payment_id
+        - amount
+        - status
+        - date
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        order_payment_id:
+          $ref: "#/components/schemas/order_payment"
+        amount:
+          type: number
+          format: float
+          example: 6998
+        status:
+          type: string
+          enum: 
+            - not paid 
+            - wating 
+            - paid
+        date: 
+          type: string
+          format: date
+          example: 20-12-2023
+          
+    booking:
+      required:
+        - id
+        - user_id
+        - date
+        - booking_status
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        user_id:
+          $ref: "#/components/schemas/Users"
+        date: 
+          type: string
+          format: date
+          example: 20-12-2023
+        booking_status:
+          type: boolean
+          format: "true"
+          
+    booking_classes:
+      required:
+        - id
+        - class_id
+        - user_id
+        - date
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        class_id:
+          $ref: "#/components/schemas/Classes"
+        user_id:
+          $ref: "#/components/schemas/Users"
+        date: 
+          type: string
+          format: date
+          example: 11-12-2023
+      
+    booking_personal_trainer:
+      required:
+        - id
+        - personal_trainer_id
+        - user_id
+        - date
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 01
+        personal_trainer_id:
+          $ref: "#/components/schemas/personal_trainers"
+        user_id:
+          $ref: "#/components/schemas/Users"
+        date: 
+          type: string
+          format: date
+          example: 12-12-2023    
+          
+    
+    
+
+        
+  requestBodies:  
+  
+    UsersArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Users'
+    
+    RolesArray:
+      description: List of role object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Roles'
+              
+    users_has_roles:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/users_has_roles"
+              
+    PermissionsArray:
+      description: List of permission object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Permissions'
+              
+    roles_has_permissions_Array:
+      description: List of roles has permissions object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/roles_has_permissions"
+              
+    users_has_permissions_Array:
+      description: List of users has permissions object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/users_has_permissions"
+              
+    ServicesArray:
+      description: List of services object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Services'
+              
+    service_has_users:
+      description: List of services has user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/services_has_users'
+              
+    ClassesArray:
+      description: List of class object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Classes'
+              
+    personal_trainers_Array:
+      description: List of personal trainers object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/personal_trainers'      
+
+    OrdersArray:
+      description: List of orders object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Orders'   
+              
+    orders_items_Array:
+      description: List of orders items object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/orders_items'   
+    
+    orders_payments_Array:
+      description: List of orders payments object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/orders_payments'  
+              
+              
+    BookingArray:
+      description: List of booking object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Booking'  
+    
+    booking_classes_Array:
+      description: List of booking class object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/booking_classes'  
+    
+    booking_personal_trainer_Array:
+      description: List of booking personal trainer object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/booking_personal_trainer'
+    
