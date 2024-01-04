@@ -1,4 +1,4 @@
-# Stream HTTP Service Template
+# Fitness HTTP Service Template
 
 [Stream] Microservices REST API template using Go Fiber Framework + exception tracking by Sentry.io
 
@@ -103,6 +103,6 @@ OTEL_EXPORTER_OTLP_ENDPOINT="localhost:4317"
 OTEL_INSECURE_MODE=true
 
 OAUTH_PUBLIC_KEY=""
- ```
+```
 
 ---

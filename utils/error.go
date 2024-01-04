@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
+	"github.com/COMTECH-63/fitness-management/config"
 	"github.com/getsentry/sentry-go"
 )
 

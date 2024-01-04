@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/models"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/pkg/tracing"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/models"
+	"github.com/COMTECH-63/fitness-management/pkg/tracing"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
+	"github.com/COMTECH-63/fitness-management/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/csrf"

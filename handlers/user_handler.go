@@ -3,11 +3,11 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/cache"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/pkg/tracing"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/services"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/utils"
+	"github.com/COMTECH-63/fitness-management/cache"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/pkg/tracing"
+	"github.com/COMTECH-63/fitness-management/services"
+	"github.com/COMTECH-63/fitness-management/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"

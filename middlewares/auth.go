@@ -6,8 +6,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/utils"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )

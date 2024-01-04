@@ -3,7 +3,7 @@ package seeders
 import (
 	"log"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
+	"github.com/COMTECH-63/fitness-management/database"
 	"gorm.io/gorm"
 )
 

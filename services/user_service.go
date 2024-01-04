@@ -3,10 +3,10 @@ package services
 import (
 	"context"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/models"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/pkg/tracing"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/repositories"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/models"
+	"github.com/COMTECH-63/fitness-management/pkg/tracing"
+	"github.com/COMTECH-63/fitness-management/repositories"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )

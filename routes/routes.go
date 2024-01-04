@@ -1,13 +1,13 @@
 package routes
 
 import (
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/cache"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/handlers"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/microservices"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/repositories"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/services"
+	"github.com/COMTECH-63/fitness-management/cache"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/handlers"
+	"github.com/COMTECH-63/fitness-management/microservices"
+	"github.com/COMTECH-63/fitness-management/repositories"
+	"github.com/COMTECH-63/fitness-management/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
