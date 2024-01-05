@@ -1,15 +1,15 @@
 -- create class_has_users table
 CREATE TABLE IF NOT EXISTS class_has_users (
-    class_id BIGSERIAL,
+    class_id BIGSERIAL ,
     user_id BIGSERIAL ,
     date_start DATE NOT NULL , 
     date_end DATE NOT NULL ,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    PRIMARY KEY (class_id , user_id),
+    PRIMARY KEY (class_id, user_id),
     FOREIGN KEY (class_id) REFERENCES classes (id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- comment to class_has_users table
 COMMENT ON COLUMN class_has_users.class_id IS 'Classes ID';

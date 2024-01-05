@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS service_has_users (
     deleted_at TIMESTAMP NULL,
     PRIMARY KEY (service_id , user_id),
     FOREIGN KEY (service_id) REFERENCES services (id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- comment to service_has_users table
 COMMENT ON COLUMN service_has_users.service_id IS 'ID ของ Service';

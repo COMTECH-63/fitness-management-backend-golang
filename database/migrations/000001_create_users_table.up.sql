@@ -1,4 +1,5 @@
-CREATE TYPE Sex AS ENUM ( 'male','female');
+CREATE TYPE Sex AS ENUM ('male','female');
+
 CREATE TABLE IF NOT EXISTS users (
   id BIGSERIAL PRIMARY KEY,
   first_name VARCHAR (30) NOT NULL,
@@ -8,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   phone_number VARCHAR (10) NOT NULL,
   address TEXT NOT NULL,
   sex Sex NOT NULL,
-  image_url NOT NULL,
+  image_url TEXT NOT NULL,
   member_id VARCHAR (5) NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,

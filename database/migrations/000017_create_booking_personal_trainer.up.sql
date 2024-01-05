@@ -3,11 +3,10 @@ CREATE TABLE IF NOT EXISTS booking_personal_trainer (
     id BIGSERIAL PRIMARY KEY,
     personal_trainer_id BIGSERIAL ,
     user_id BIGSERIAL ,
-    date DATETIME NOT NULL,
+    date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    PRIMARY KEY (personal_trainer_id , user_id ),
     FOREIGN KEY (personal_trainer_id) REFERENCES personal_trainers (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

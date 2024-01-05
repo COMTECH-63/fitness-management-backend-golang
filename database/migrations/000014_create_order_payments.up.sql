@@ -1,15 +1,15 @@
 CREATE TYPE Status AS ENUM ( 'not_paid','paid');
+
 -- create order_payments table
 CREATE TABLE IF NOT EXISTS order_payments (
     id BIGSERIAL PRIMARY KEY,
     order_id BIGSERIAL ,
-    amount DECIMAL (6,2) NOT NULL, 
+    amount NUMERIC (6,2) NOT NULL, 
     status Status NOT NULL, 
-    date DATETIME NOT NULL,
+    date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    PRIMARY KEY (order_id),
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 -- comment to order_payments table

@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS order_items (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    PRIMARY KEY (order_id , service_id),
     FOREIGN KEY (order_id) REFERENCES orders (id),
     FOREIGN KEY (service_id) REFERENCES services (id)
 );

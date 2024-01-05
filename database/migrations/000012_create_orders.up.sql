@@ -2,14 +2,13 @@
 CREATE TABLE IF NOT EXISTS orders (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGSERIAL ,
-    total DECIMAL (6,2) NOT NULL , 
-    vat DECIMAL (6,2) NOT NULL ,
-    total_vat DECIMAL (6,2) NOT NULL ,
+    total NUMERIC  (6,2) NOT NULL , 
+    vat NUMERIC  (6,2) NOT NULL ,
+    total_vat NUMERIC  (6,2) NOT NULL ,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-    PRIMARY KEY (user_id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- comment to orders table
 COMMENT ON COLUMN orders.id IS 'Orders ID';
