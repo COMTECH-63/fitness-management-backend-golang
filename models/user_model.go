@@ -5,6 +5,7 @@ type Sex string
 const (
 	Male   Sex = "male"
 	Female Sex = "female"
+	O
 )
 
 func (u *User) SetSex(value string) {
