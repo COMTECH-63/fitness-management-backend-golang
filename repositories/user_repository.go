@@ -41,7 +41,8 @@ func (r userRepository) GetUserPaginate(ctx context.Context, pagination database
 		}
 	} else {
 		if err = r.db.Scopes(database.Paginate(users, &pagination, r.db)).
-			Find(&users).Error; err != nil {
+			// Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&users).Error; err != nil {
+			Preload("Roles").Preload("Permissions").Preload("Services").Find(&users).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -62,7 +63,10 @@ func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, e
 	)
 
 	// Query
-	if err = r.db.First(&user, id).Error; err != nil {
+	// if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&user, id).Error; err != nil {
+	// 	return user, err
+	// }
+	if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Find(&user, id).Error; err != nil {
 		return user, err
 	}
 
@@ -97,10 +101,35 @@ func (r userRepository) UpdateUser(ctx context.Context, id int, user *models.Use
 	// Get model
 	r.db.First(&existUser)
 
+	// Clear existing associations
+	r.db.Model(&existUser).Association("Roles").Clear()
+	r.db.Model(&existUser).Association("Permissions").Clear()
+	r.db.Model(&existUser).Association("Services").Clear()
+	// r.db.Model(&existUser).Association("Classes").Clear()
+	// r.db.Model(&existUser).Association("Orders").Clear()
+	// r.db.Model(&existUser).Association("Bookings").Clear()
+	// r.db.Model(&existUser).Association("BookingClasses").Clear()
+	// r.db.Model(&existUser).Association("BookingPersonalTrainers").Clear()
+
 	// Set attributes
 	existUser.FirstName = user.FirstName
 	existUser.LastName = user.LastName
+	existUser.IDCard = user.IDCard
 	existUser.Email = user.Email
+	existUser.PhoneNumber = user.PhoneNumber
+	existUser.Address = user.Address
+	existUser.Sex = user.Sex
+	existUser.ImageURL = user.ImageURL
+	existUser.MemberID = user.MemberID
+
+	existUser.Roles = user.Roles
+	existUser.Permissions = user.Permissions
+	existUser.Services = user.Services
+	// existUser.Classes = user.Classes
+	// existUser.Orders = user.Orders
+	// existUser.Bookings = user.Bookings
+	// existUser.BookingClasses = user.BookingClasses
+	// existUser.BookingPersonalTrainers = user.BookingPersonalTrainers
 
 	// Execute
 	if err = r.db.Save(&existUser).Error; err != nil {

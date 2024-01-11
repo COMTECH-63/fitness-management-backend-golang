@@ -25,7 +25,9 @@ func NewServiceSeeder(db *gorm.DB) ServiceSeeder {
 func (s serviceSeeder) Seed() error {
 	log.Println("ServiceSeeder running...")
 
-	service := []models.Service{
+	var user models.User
+
+	services := []models.Service{
 		{
 			Name:        "Membership 1 month",
 			Description: "สมาชิกรายเดือน 1 เดือน",
@@ -78,7 +80,12 @@ func (s serviceSeeder) Seed() error {
 		},
 	}
 
-	result := s.db.Create(&service)
+	result := s.db.Create(&services)
+
+	s.db.Find(&user)
+
+	s.db.Model(&services).Association("Users").Append(&user)
+
 	log.Println("ServiceSeeder seeded!")
 
 	return result.Error

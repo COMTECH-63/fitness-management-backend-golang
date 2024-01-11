@@ -32,8 +32,8 @@ type User struct {
 	Permissions             []Permission             `json:"permissions" gorm:"many2many:user_has_permissions;"`
 	Services                []Service                `json:"services" gorm:"many2many:service_has_users;"`
 	Classes                 []Class                  `json:"classes" gorm:"many2many:class_has_users;"`
-	Orders                  []Order                  `json:"orders" gorm:"foreignkey:OrderID"`
-	Bookings                []Booking                `json:"bookings" gorm:"foreignkey:BookingID"`
-	BookingClasses          []BookingClass           `json:"booking_classes" gorm:"foreignkey:BookingClassID"`
-	BookingPersonalTrainers []BookingPersonalTrainer `json:"booking_personal_trainers" gorm:"foreignkey:BookingPersonalTrainerID"`
+	Orders                  []Order                  `json:"orders" gorm:"foreignkey:UserID"`
+	Bookings                []Booking                `json:"bookings" gorm:"foreignkey:UserID"`
+	BookingClasses          []BookingClass           `json:"booking_classes" gorm:"foreignkey:UserID"`
+	BookingPersonalTrainers []BookingPersonalTrainer `json:"booking_personal_trainers" gorm:"foreignkey:UserID"`
 }

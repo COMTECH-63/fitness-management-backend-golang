@@ -9,5 +9,5 @@ type Order struct {
 	UserID uint `json:"user_id"`
 	User   User `json:"user" gorm:"foreignkey:UserID"`
 
-	OrderItems []OrderItem `json:"order_items" gorm:"foreignkey:OrderItemID"`
+	OrderItems []OrderItem `json:"order_items" gorm:"foreignkey:OrderID"`
 }

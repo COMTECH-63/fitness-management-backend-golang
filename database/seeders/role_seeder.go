@@ -25,11 +25,7 @@ func NewRoleSeeder(db *gorm.DB) RoleSeeder {
 func (s roleSeeder) Seed() error {
 	log.Println("RoleSeeder running...")
 
-	// var (
-	// 	role models.Role
-	// )
-
-	role := []models.Role{
+	roles := []models.Role{
 		{
 			Name: "Member",
 		},
@@ -41,7 +37,8 @@ func (s roleSeeder) Seed() error {
 		},
 	}
 
-	result := s.db.Create(&role)
+	result := s.db.Create(&roles)
+
 	log.Println("RoleSeeder seeded!")
 
 	return result.Error
