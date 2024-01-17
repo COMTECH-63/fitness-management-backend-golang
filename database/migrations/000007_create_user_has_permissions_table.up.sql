@@ -1,7 +1,7 @@
 -- create user_has_permissions table
 CREATE TABLE IF NOT EXISTS user_has_permissions (
-    user_id BIGINT,
-    permission_id BIGINT,
+    user_id BIGSERIAL,
+    permission_id BIGSERIAL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,

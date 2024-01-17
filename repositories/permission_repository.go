@@ -30,15 +30,17 @@ func (r permissionRepository) GetPermissionPaginate(ctx context.Context, span *s
 	// Pagination query
 	if search != "" {
 		if err = r.db.Scopes(database.Paginate(permissions, &pagination, r.db)).
-			Where(`name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`description LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Where(`email LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Or(`first_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Or(`last_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Or(`phone LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
 			Find(&permissions).Error; err != nil {
 			log.Println(err)
 			return nil, errors.New("GetPermissionPaginateError")
 		}
 	} else {
 		if err = r.db.Scopes(database.Paginate(permissions, &pagination, r.db)).
-			Preload("Users").Preload("Roles").Find(&permissions).Error; err != nil {
+			Preload("Teams").Preload("Roles").Preload("Permissions").Preload("Projects").Find(&permissions).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -59,7 +61,11 @@ func (r permissionRepository) GetPermissionByID(ctx context.Context, span *sentr
 	)
 
 	// Query
-	if err = r.db.Preload("Users").Preload("Roles").Find(&permission, id).Error; err != nil {
+	if err = r.db.First(&permission, id).Error; err != nil {
+		return permission, err
+	}
+
+	if err = r.db.Preload("Teams").Preload("Roles").Preload("Permissions").Preload("Projects").Find(&permission).Error; err != nil {
 		return permission, err
 	}
 
@@ -78,6 +84,8 @@ func (r permissionRepository) CreatePermission(ctx context.Context, span *sentry
 	if err = r.db.Create(&permission).Error; err != nil {
 		return err
 	}
+
+	fmt.Println(&permission)
 
 	childSpan.Finish()
 

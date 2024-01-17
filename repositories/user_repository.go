@@ -9,6 +9,7 @@ import (
 	"github.com/COMTECH-63/fitness-management/database"
 	"github.com/COMTECH-63/fitness-management/models"
 	"github.com/COMTECH-63/fitness-management/pkg/tracing"
+	"github.com/getsentry/sentry-go"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return userRepository{db: db}
 }
 
-func (r userRepository) GetUserPaginate(ctx context.Context, pagination database.Pagination, search string) (*database.Pagination, error) {
+func (r userRepository) GetUserPaginate(ctx context.Context, span *sentry.Span, pagination database.Pagination, search string) (*database.Pagination, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetUserPaginateRepository", trace.WithAttributes(attribute.String("repository", "GetUserPaginate"), attribute.String("search", search)))
 		users        []models.User
@@ -55,7 +56,7 @@ func (r userRepository) GetUserPaginate(ctx context.Context, pagination database
 	return &pagination, nil
 }
 
-func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, error) {
+func (r userRepository) GetUserByID(ctx context.Context, span *sentry.Span, id int) (models.User, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetUserByIDRepository", trace.WithAttributes(attribute.String("repository", "GetUserByID")))
 		user         models.User
@@ -75,7 +76,7 @@ func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, e
 	return user, nil
 }
 
-func (r userRepository) CreateUser(ctx context.Context, user *models.User) error {
+func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user *models.User) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "CreateUserRepository", trace.WithAttributes(attribute.String("repository", "CreateUser")))
 		err          error
@@ -91,7 +92,7 @@ func (r userRepository) CreateUser(ctx context.Context, user *models.User) error
 	return nil
 }
 
-func (r userRepository) UpdateUser(ctx context.Context, id int, user *models.User) error {
+func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "UpdateUserRepository", trace.WithAttributes(attribute.String("repository", "UpdateUser")))
 		existUser    *models.User
@@ -141,7 +142,7 @@ func (r userRepository) UpdateUser(ctx context.Context, id int, user *models.Use
 	return nil
 }
 
-func (r userRepository) DeleteUser(ctx context.Context, id int) error {
+func (r userRepository) DeleteUser(ctx context.Context, span *sentry.Span, id int) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "DeleteUserRepository", trace.WithAttributes(attribute.String("repository", "DeleteUser")))
 		err          error

@@ -3,7 +3,7 @@ module github.com/COMTECH-63/fitness-management
 go 1.21.5
 
 require (
-	github.com/getsentry/sentry-go v0.25.0
+	github.com/getsentry/sentry-go v0.26.0
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/goccy/go-json v0.9.11

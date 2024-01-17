@@ -5,12 +5,10 @@ import (
 
 	"github.com/COMTECH-63/fitness-management/cache"
 	"github.com/COMTECH-63/fitness-management/database"
-	"github.com/COMTECH-63/fitness-management/pkg/tracing"
 	"github.com/COMTECH-63/fitness-management/services"
 	"github.com/COMTECH-63/fitness-management/utils"
+	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type (
@@ -26,7 +24,7 @@ type (
 
 func (h handler) GetUsers(c *fiber.Ctx) error {
 	var (
-		ctx, span    = tracing.Tracer.Start(c.Context(), "GetUsersHandler", trace.WithAttributes(attribute.String("handler", "GetUsers")))
+		span         = sentry.StartSpan(c.Context(), "GetUsersHandler", sentry.WithTransactionName("GetUsers"))
 		responseData *database.Pagination
 	)
 
@@ -44,44 +42,46 @@ func (h handler) GetUsers(c *fiber.Ctx) error {
 		cacheKey = fmt.Sprintf(`%s_%s`, cacheKey, search)
 	}
 
-	responseData, err := h.PaginationCache(ctx, cacheKey, cacheTags, paginate, search, h.userService.GetUsers)
+	responseData, err := h.PaginationCache(c, span, cacheKey, cacheTags, paginate, search, h.userService.GetUsers)
 	if err != nil {
 		utils.HandleErrors(err)
 		return fiber.ErrInternalServerError
 	}
 
-	span.End()
+	span.Finish()
 	return c.JSON(responseData)
 }
 
 func (h handler) GetUser(c *fiber.Ctx) error {
 	var (
-		id, _        = c.ParamsInt("id")
-		ctx, span    = tracing.Tracer.Start(c.Context(), "GetUserHandler", trace.WithAttributes(attribute.String("handler", "GetUser"), attribute.Int("id", id)))
+		span         = sentry.StartSpan(c.Context(), "GetUserHandler", sentry.WithTransactionName("GetUser"))
 		responseData map[string]interface{}
 	)
+
+	// Get route parameter
+	id, _ := c.ParamsInt("id")
 
 	// Make cache key
 	cacheTags := []string{"users"}
 	cacheKey := fmt.Sprintf("GetUser_%d", id)
 
-	responseData, err := h.QueryCache(ctx, cacheKey, cacheTags, id, h.userService.GetUser)
+	responseData, err := h.QueryCache(c, span, cacheKey, cacheTags, id, h.userService.GetUser)
 	if err != nil {
 		utils.HandleErrors(err)
 		return fiber.ErrInternalServerError
 	}
 
-	span.End()
+	span.Finish()
 	return c.JSON(responseData)
 }
 
 func (h handler) CreateUser(c *fiber.Ctx) error {
 	var (
-		ctx, span = tracing.Tracer.Start(c.Context(), "CreateUserHandler", trace.WithAttributes(attribute.String("handler", "CreateUser")))
+		span = sentry.StartSpan(c.Context(), "CreateUserHandler", sentry.WithTransactionName("CreateUser"))
 	)
 
 	// Create data transfer object
-	userDto := new(services.UserDto)
+	userDto := new(services.CreateUserDto)
 
 	// Parse HTTP request body to struct variable
 	if err := c.BodyParser(userDto); err != nil {
@@ -95,16 +95,16 @@ func (h handler) CreateUser(c *fiber.Ctx) error {
 	}
 
 	// Call service function
-	err := h.userService.CreateUser(ctx, userDto)
+	err := h.userService.CreateUser(c.Context(), span, userDto)
 	if err != nil {
 		utils.HandleErrors(err)
 		return err
 	}
 
 	// Clear user cache
-	cache.Cacher.Tag("users").Flush(ctx)
+	cache.Cacher.Tag("users").Flush(c.Context())
 
-	span.End()
+	span.Finish()
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"code":    "0",
 		"message": "OK",
@@ -113,12 +113,14 @@ func (h handler) CreateUser(c *fiber.Ctx) error {
 
 func (h handler) UpdateUser(c *fiber.Ctx) error {
 	var (
-		id, _     = c.ParamsInt("id")
-		ctx, span = tracing.Tracer.Start(c.Context(), "UpdateUserHandler", trace.WithAttributes(attribute.String("handler", "UpdateUser"), attribute.Int("id", id)))
+		span = sentry.StartSpan(c.Context(), "UpdateUserHandler", sentry.WithTransactionName("UpdateUser"))
 	)
 
+	// Get route parameter
+	id, _ := c.ParamsInt("id")
+
 	// Create data transfer object
-	userDto := new(services.UserDto)
+	userDto := new(services.UpdateUserDto)
 
 	// Parse HTTP request body to struct variable
 	if err := c.BodyParser(userDto); err != nil {
@@ -132,16 +134,16 @@ func (h handler) UpdateUser(c *fiber.Ctx) error {
 	}
 
 	// Call service function
-	err := h.userService.UpdateUser(ctx, id, userDto)
+	err := h.userService.UpdateUser(c.Context(), span, id, userDto)
 	if err != nil {
 		utils.HandleErrors(err)
 		return err
 	}
 
 	// Clear user cache
-	cache.Cacher.Tag("users").Flush(ctx)
+	cache.Cacher.Tag("users").Flush(c.Context())
 
-	span.End()
+	span.Finish()
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"code":    "0",
 		"message": "OK",
@@ -150,21 +152,23 @@ func (h handler) UpdateUser(c *fiber.Ctx) error {
 
 func (h handler) DeleteUser(c *fiber.Ctx) error {
 	var (
-		id, _     = c.ParamsInt("id")
-		ctx, span = tracing.Tracer.Start(c.Context(), "DeleteUserHandler", trace.WithAttributes(attribute.String("handler", "DeleteUser"), attribute.Int("id", id)))
+		span = sentry.StartSpan(c.Context(), "DeleteUserHandler", sentry.WithTransactionName("DeleteUser"))
 	)
 
+	// Get route parameter
+	id, _ := c.ParamsInt("id")
+
 	// Call service function
-	err := h.userService.DeleteUser(ctx, id)
+	err := h.userService.DeleteUser(c.Context(), span, id)
 	if err != nil {
 		utils.HandleErrors(err)
 		return err
 	}
 
 	// Clear user cache
-	cache.Cacher.Tag("users").Flush(ctx)
+	cache.Cacher.Tag("users").Flush(c.Context())
 
-	span.End()
+	span.Finish()
 	return c.Status(fiber.StatusNoContent).JSON(fiber.Map{
 		"code":    "0",
 		"message": "OK",

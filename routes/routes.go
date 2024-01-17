@@ -57,10 +57,17 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	// Initialize services
 	userService := services.NewUserService(userRepo)
 
+	// Initialize repositories, services, and handlers
+	roleRepo := repositories.NewRoleRepository(database.DBConn)
+
+	// Initialize services
+	roleService := services.NewRoleService(roleRepo)
+
 	// Initialize handlers
 	handler := handlers.NewHandler(
 		cache.Cacher,
 		userService,
+		roleService,
 	)
 
 	// REST API endpoint ------------------------------------------------------------------
@@ -75,4 +82,11 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	apiV1.Post("/users", func(c *fiber.Ctx) error { return handler.CreateUser(c) })
 	apiV1.Put("/users/:id", func(c *fiber.Ctx) error { return handler.UpdateUser(c) })
 	apiV1.Delete("/users/:id", func(c *fiber.Ctx) error { return handler.DeleteUser(c) })
+
+	// Role service routes
+	apiV1.Get("/roles", func(c *fiber.Ctx) error { return handler.GetRoles(c) })
+	apiV1.Get("/roles/:id", func(c *fiber.Ctx) error { return handler.GetRole(c) })
+	apiV1.Post("/roles", func(c *fiber.Ctx) error { return handler.CreateRole(c) })
+	apiV1.Put("/roles/:id", func(c *fiber.Ctx) error { return handler.UpdateRole(c) })
+	apiV1.Delete("/roles/:id", func(c *fiber.Ctx) error { return handler.DeleteRole(c) })
 }

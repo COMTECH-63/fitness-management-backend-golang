@@ -1,7 +1,7 @@
 -- create role_has_permissions table
 CREATE TABLE IF NOT EXISTS role_has_permissions (
-    role_id BIGINT,
-    permission_id BIGINT,
+    role_id BIGSERIAL,
+    permission_id BIGSERIAL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,

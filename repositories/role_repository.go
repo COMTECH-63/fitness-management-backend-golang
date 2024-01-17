@@ -9,6 +9,7 @@ import (
 	"github.com/COMTECH-63/fitness-management/database"
 	"github.com/COMTECH-63/fitness-management/models"
 	"github.com/COMTECH-63/fitness-management/pkg/tracing"
+	"github.com/getsentry/sentry-go"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ func NewRoleRepository(db *gorm.DB) RoleRepository {
 	return roleRepository{db: db}
 }
 
-func (r roleRepository) GetRolePaginate(ctx context.Context, pagination database.Pagination, search string) (*database.Pagination, error) {
+func (r roleRepository) GetRolePaginate(ctx context.Context, span *sentry.Span, pagination database.Pagination, search string) (*database.Pagination, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetRolePaginateRepository", trace.WithAttributes(attribute.String("repository", "GetRolePaginate"), attribute.String("search", search)))
 		roles        []models.Role
@@ -32,13 +33,16 @@ func (r roleRepository) GetRolePaginate(ctx context.Context, pagination database
 	// Pagination query
 	if search != "" {
 		if err = r.db.Scopes(database.Paginate(roles, &pagination, r.db)).
-			Where(`name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Where(`email LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Or(`first_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Or(`last_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
 			Find(&roles).Error; err != nil {
 			log.Println(err)
 			return nil, errors.New("GetRolePaginateError")
 		}
 	} else {
 		if err = r.db.Scopes(database.Paginate(roles, &pagination, r.db)).
+			// Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&roles).Error; err != nil {
 			Preload("Users").Preload("Permissions").Find(&roles).Error; err != nil {
 			return nil, err
 		}
@@ -52,7 +56,7 @@ func (r roleRepository) GetRolePaginate(ctx context.Context, pagination database
 	return &pagination, nil
 }
 
-func (r roleRepository) GetRoleByID(ctx context.Context, id int) (models.Role, error) {
+func (r roleRepository) GetRoleByID(ctx context.Context, span *sentry.Span, id int) (models.Role, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetRoleByIDRepository", trace.WithAttributes(attribute.String("repository", "GetRoleByID")))
 		role         models.Role
@@ -60,6 +64,9 @@ func (r roleRepository) GetRoleByID(ctx context.Context, id int) (models.Role, e
 	)
 
 	// Query
+	// if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&role, id).Error; err != nil {
+	// 	return role, err
+	// }
 	if err = r.db.Preload("Users").Preload("Permissions").Find(&role, id).Error; err != nil {
 		return role, err
 	}
@@ -69,7 +76,7 @@ func (r roleRepository) GetRoleByID(ctx context.Context, id int) (models.Role, e
 	return role, nil
 }
 
-func (r roleRepository) CreateRole(ctx context.Context, role *models.Role) error {
+func (r roleRepository) CreateRole(ctx context.Context, span *sentry.Span, role *models.Role) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "CreateRoleRepository", trace.WithAttributes(attribute.String("repository", "CreateRole")))
 		err          error
@@ -85,7 +92,7 @@ func (r roleRepository) CreateRole(ctx context.Context, role *models.Role) error
 	return nil
 }
 
-func (r roleRepository) UpdateRole(ctx context.Context, id int, role *models.Role) error {
+func (r roleRepository) UpdateRole(ctx context.Context, span *sentry.Span, id int, role *models.Role) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "UpdateRoleRepository", trace.WithAttributes(attribute.String("repository", "UpdateRole")))
 		existRole    *models.Role
@@ -110,12 +117,17 @@ func (r roleRepository) UpdateRole(ctx context.Context, id int, role *models.Rol
 		return err
 	}
 
+	// Execute
+	if err = r.db.Save(&existRole).Error; err != nil {
+		return err
+	}
+
 	childSpan.End()
 
 	return nil
 }
 
-func (r roleRepository) DeleteRole(ctx context.Context, id int) error {
+func (r roleRepository) DeleteRole(ctx context.Context, span *sentry.Span, id int) error {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "DeleteRoleRepository", trace.WithAttributes(attribute.String("repository", "DeleteRole")))
 		err          error
