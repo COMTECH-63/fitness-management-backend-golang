@@ -1,4 +1,5 @@
-DROP TYPE Sex;
 
 DROP TABLE IF EXISTS users;
+
+DROP TYPE Sex;
 

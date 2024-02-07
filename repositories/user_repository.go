@@ -78,7 +78,7 @@ func (r userRepository) GetUserByID(ctx context.Context, span *sentry.Span, id i
 
 func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user *models.User) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "CreateUserRepository", trace.WithAttributes(attribute.String("repository", "CreateUser")))
+		childSpan = span.StartChild("CreateUserRepository")
 		err          error
 	)
 
@@ -87,20 +87,19 @@ func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user 
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }
 
 func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "UpdateUserRepository", trace.WithAttributes(attribute.String("repository", "UpdateUser")))
+		childSpan = span.StartChild("UpdateUserRepository")
 		existUser    *models.User
-		err          error
 	)
 
 	// Get model
-	r.db.First(&existUser)
+	r.db.Find(&existUser , id)
 
 	// Clear existing associations
 	r.db.Model(&existUser).Association("Roles").Clear()
@@ -133,18 +132,18 @@ func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id in
 	// existUser.BookingPersonalTrainers = user.BookingPersonalTrainers
 
 	// Execute
-	if err = r.db.Save(&existUser).Error; err != nil {
+	if err := r.db.Save(&existUser).Error; err != nil {
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }
 
 func (r userRepository) DeleteUser(ctx context.Context, span *sentry.Span, id int) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "DeleteUserRepository", trace.WithAttributes(attribute.String("repository", "DeleteUser")))
+		childSpan = span.StartChild("DeleteUserRepository")
 		err          error
 	)
 
@@ -153,7 +152,7 @@ func (r userRepository) DeleteUser(ctx context.Context, span *sentry.Span, id in
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }

@@ -26,8 +26,8 @@ type (
 	}
 
 	CreatePermissionDto struct {
-		Name        string `json:"name" form:"name" query:"name" validate:"required,max:25"`
-		Description string `json:"description" form:"description" query:"description" validate:"required,max:50"`
+		Name        string `json:"name" form:"name" query:"name" validate:"required,max=25"`
+		Description string `json:"description" form:"description" query:"description" validate:"required,max=50"`
 
 		UserDtos []CreatePermissionUserDto `json:"users" validate:"dive"`
 		RoleDtos []CreatePermissionRoleDto `json:"roles" validate:"dive"`

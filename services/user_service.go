@@ -97,6 +97,7 @@ func (s userService) UpdateUser(ctx context.Context, span *sentry.Span, id int, 
 	user.PhoneNumber = userDto.PhoneNumber
 	user.Address = userDto.Address
 	user.ImageURL = userDto.ImageURL
+	user.MemberID = userDto.MemberID
 
 	for _, roleDto := range userDto.RoleDtos {
 		var role models.Role
