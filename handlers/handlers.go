@@ -4,10 +4,11 @@ import (
 	"context"
 	"log"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/cache"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/services"
+	"github.com/COMTECH-63/fitness-management/cache"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/services"
+	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,47 +17,52 @@ type (
 	handler struct {
 		cacher      *cache.Cache
 		userService services.UserService
+		roleService services.RoleService
 	}
 	// Register handler interfaces
 	Handler interface {
 		UserHandler
+		RoleHandler
 	}
 )
 
 func NewHandler(
 	cacher *cache.Cache,
 	userService services.UserService,
+	roleService services.RoleService,
 ) handler {
 	return handler{
 		cacher:      cacher,
 		userService: userService,
+		roleService: roleService,
 	}
 }
 
-type ServicePaginationFunc func(ctx context.Context, paginate database.Pagination, search string) (*database.Pagination, error)
-type ServiceQueryFunc func(ctx context.Context, id int) (map[string]interface{}, error)
+type ServicePaginationFunc func(ctx context.Context, span *sentry.Span, paginate database.Pagination, search string) (*database.Pagination, error)
+type ServiceQueryFunc func(ctx context.Context, span *sentry.Span, id int) (map[string]interface{}, error)
+type ServiceQueryByStringParamFunc func(ctx context.Context, span *sentry.Span, id string) (map[string]interface{}, error)
 
-func (h handler) PaginationCache(ctx context.Context, key string, tags []string, paginate database.Pagination, search string, f ServicePaginationFunc) (*database.Pagination, error) {
+func (h handler) PaginationCache(c *fiber.Ctx, span *sentry.Span, key string, tags []string, paginate database.Pagination, search string, f ServicePaginationFunc) (*database.Pagination, error) {
 	var (
 		responseData *database.Pagination
 		err          error
 	)
 
 	// Get the cached attributes object
-	err = cache.Cacher.Get(ctx, key, &responseData)
+	err = cache.Cacher.Get(c.Context(), key, &responseData)
 	if err != nil {
 		return nil, err
 	}
 
 	if responseData == nil {
 		// Call service function
-		responseData, err = f(ctx, paginate, search)
+		responseData, err = f(c.Context(), span, paginate, search)
 		if err != nil {
 			return nil, err
 		}
 
 		// Set cache
-		err = cache.Cacher.Tag(tags...).Set(ctx, key, &responseData)
+		err = cache.Cacher.Tag(tags...).Set(c.Context(), key, &responseData)
 		if err != nil {
 			return nil, err
 		}
@@ -65,27 +71,27 @@ func (h handler) PaginationCache(ctx context.Context, key string, tags []string,
 	return responseData, nil
 }
 
-func (h handler) QueryCache(ctx context.Context, key string, tags []string, id int, f ServiceQueryFunc) (map[string]interface{}, error) {
+func (h handler) QueryCache(c *fiber.Ctx, span *sentry.Span, key string, tags []string, id int, f ServiceQueryFunc) (map[string]interface{}, error) {
 	var (
 		responseData map[string]interface{}
 		err          error
 	)
 
 	// Get the cached attributes object
-	err = cache.Cacher.Get(ctx, key, &responseData)
+	err = cache.Cacher.Get(c.Context(), key, &responseData)
 	if err != nil {
 		return nil, err
 	}
 
 	if responseData == nil {
 		// Call service function
-		responseData, err = f(ctx, id)
+		responseData, err = f(c.Context(), span, id)
 		if err != nil {
 			return nil, err
 		}
 
 		// Set cache
-		err = cache.Cacher.Tag(tags...).Set(ctx, key, &responseData)
+		err = cache.Cacher.Tag(tags...).Set(c.Context(), key, &responseData)
 		if err != nil {
 			return nil, err
 		}

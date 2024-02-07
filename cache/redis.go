@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/utils/color"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/utils/color"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )

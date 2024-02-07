@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/models"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/pkg/tracing"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/models"
+	"github.com/COMTECH-63/fitness-management/pkg/tracing"
+	"github.com/getsentry/sentry-go"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return userRepository{db: db}
 }
 
-func (r userRepository) GetUserPaginate(ctx context.Context, pagination database.Pagination, search string) (*database.Pagination, error) {
+func (r userRepository) GetUserPaginate(ctx context.Context, span *sentry.Span, pagination database.Pagination, search string) (*database.Pagination, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetUserPaginateRepository", trace.WithAttributes(attribute.String("repository", "GetUserPaginate"), attribute.String("search", search)))
 		users        []models.User
@@ -41,7 +42,8 @@ func (r userRepository) GetUserPaginate(ctx context.Context, pagination database
 		}
 	} else {
 		if err = r.db.Scopes(database.Paginate(users, &pagination, r.db)).
-			Find(&users).Error; err != nil {
+			// Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&users).Error; err != nil {
+			Preload("Roles").Preload("Permissions").Preload("Services").Find(&users).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -54,7 +56,7 @@ func (r userRepository) GetUserPaginate(ctx context.Context, pagination database
 	return &pagination, nil
 }
 
-func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, error) {
+func (r userRepository) GetUserByID(ctx context.Context, span *sentry.Span, id int) (models.User, error) {
 	var (
 		_, childSpan = tracing.Tracer.Start(ctx, "GetUserByIDRepository", trace.WithAttributes(attribute.String("repository", "GetUserByID")))
 		user         models.User
@@ -62,7 +64,10 @@ func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, e
 	)
 
 	// Query
-	if err = r.db.First(&user, id).Error; err != nil {
+	// if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&user, id).Error; err != nil {
+	// 	return user, err
+	// }
+	if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Find(&user, id).Error; err != nil {
 		return user, err
 	}
 
@@ -71,9 +76,9 @@ func (r userRepository) GetUserByID(ctx context.Context, id int) (models.User, e
 	return user, nil
 }
 
-func (r userRepository) CreateUser(ctx context.Context, user *models.User) error {
+func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user *models.User) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "CreateUserRepository", trace.WithAttributes(attribute.String("repository", "CreateUser")))
+		childSpan = span.StartChild("CreateUserRepository")
 		err          error
 	)
 
@@ -82,39 +87,63 @@ func (r userRepository) CreateUser(ctx context.Context, user *models.User) error
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }
 
-func (r userRepository) UpdateUser(ctx context.Context, id int, user *models.User) error {
+func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "UpdateUserRepository", trace.WithAttributes(attribute.String("repository", "UpdateUser")))
+		childSpan = span.StartChild("UpdateUserRepository")
 		existUser    *models.User
-		err          error
 	)
 
 	// Get model
-	r.db.First(&existUser)
+	r.db.Find(&existUser , id)
+
+	// Clear existing associations
+	r.db.Model(&existUser).Association("Roles").Clear()
+	r.db.Model(&existUser).Association("Permissions").Clear()
+	r.db.Model(&existUser).Association("Services").Clear()
+	// r.db.Model(&existUser).Association("Classes").Clear()
+	// r.db.Model(&existUser).Association("Orders").Clear()
+	// r.db.Model(&existUser).Association("Bookings").Clear()
+	// r.db.Model(&existUser).Association("BookingClasses").Clear()
+	// r.db.Model(&existUser).Association("BookingPersonalTrainers").Clear()
 
 	// Set attributes
 	existUser.FirstName = user.FirstName
 	existUser.LastName = user.LastName
+	existUser.IDCard = user.IDCard
 	existUser.Email = user.Email
+	existUser.PhoneNumber = user.PhoneNumber
+	existUser.Address = user.Address
+	existUser.Sex = user.Sex
+	existUser.ImageURL = user.ImageURL
+	existUser.MemberID = user.MemberID
+
+	existUser.Roles = user.Roles
+	existUser.Permissions = user.Permissions
+	existUser.Services = user.Services
+	// existUser.Classes = user.Classes
+	// existUser.Orders = user.Orders
+	// existUser.Bookings = user.Bookings
+	// existUser.BookingClasses = user.BookingClasses
+	// existUser.BookingPersonalTrainers = user.BookingPersonalTrainers
 
 	// Execute
-	if err = r.db.Save(&existUser).Error; err != nil {
+	if err := r.db.Save(&existUser).Error; err != nil {
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }
 
-func (r userRepository) DeleteUser(ctx context.Context, id int) error {
+func (r userRepository) DeleteUser(ctx context.Context, span *sentry.Span, id int) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "DeleteUserRepository", trace.WithAttributes(attribute.String("repository", "DeleteUser")))
+		childSpan = span.StartChild("DeleteUserRepository")
 		err          error
 	)
 
@@ -123,7 +152,7 @@ func (r userRepository) DeleteUser(ctx context.Context, id int) error {
 		return err
 	}
 
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }

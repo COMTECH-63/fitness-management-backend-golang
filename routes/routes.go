@@ -1,13 +1,13 @@
 package routes
 
 import (
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/cache"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/handlers"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/microservices"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/repositories"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/services"
+	"github.com/COMTECH-63/fitness-management/cache"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/database"
+	"github.com/COMTECH-63/fitness-management/handlers"
+	"github.com/COMTECH-63/fitness-management/microservices"
+	"github.com/COMTECH-63/fitness-management/repositories"
+	"github.com/COMTECH-63/fitness-management/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
@@ -57,10 +57,17 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	// Initialize services
 	userService := services.NewUserService(userRepo)
 
+	// Initialize repositories, services, and handlers
+	roleRepo := repositories.NewRoleRepository(database.DBConn)
+
+	// Initialize services
+	roleService := services.NewRoleService(roleRepo)
+
 	// Initialize handlers
 	handler := handlers.NewHandler(
 		cache.Cacher,
 		userService,
+		roleService,
 	)
 
 	// REST API endpoint ------------------------------------------------------------------
@@ -75,4 +82,11 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	apiV1.Post("/users", func(c *fiber.Ctx) error { return handler.CreateUser(c) })
 	apiV1.Put("/users/:id", func(c *fiber.Ctx) error { return handler.UpdateUser(c) })
 	apiV1.Delete("/users/:id", func(c *fiber.Ctx) error { return handler.DeleteUser(c) })
+
+	// Role service routes
+	apiV1.Get("/roles", func(c *fiber.Ctx) error { return handler.GetRoles(c) })
+	apiV1.Get("/roles/:id", func(c *fiber.Ctx) error { return handler.GetRole(c) })
+	apiV1.Post("/roles", func(c *fiber.Ctx) error { return handler.CreateRole(c) })
+	apiV1.Put("/roles/:id", func(c *fiber.Ctx) error { return handler.UpdateRole(c) })
+	apiV1.Delete("/roles/:id", func(c *fiber.Ctx) error { return handler.DeleteRole(c) })
 }

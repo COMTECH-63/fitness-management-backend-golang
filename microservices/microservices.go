@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/cache"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/config"
-	"github.com/Stream-I-T-Consulting/stream-http-service-go/database"
+	"github.com/COMTECH-63/fitness-management/cache"
+	"github.com/COMTECH-63/fitness-management/config"
+	"github.com/COMTECH-63/fitness-management/database"
 	"github.com/gofiber/fiber/v2"
 )
 
