@@ -63,11 +63,18 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	// Initialize services
 	roleService := services.NewRoleService(roleRepo)
 
+	// Initialize repositories, services, and handlers
+	permissionRepo := repositories.NewPermissionRepository(database.DBConn)
+
+	// Initialize services
+	permissionService := services.NewPermissionService(permissionRepo)
+
 	// Initialize handlers
 	handler := handlers.NewHandler(
 		cache.Cacher,
 		userService,
 		roleService,
+		permissionService,
 	)
 
 	// REST API endpoint ------------------------------------------------------------------
@@ -89,4 +96,11 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	apiV1.Post("/roles", func(c *fiber.Ctx) error { return handler.CreateRole(c) })
 	apiV1.Put("/roles/:id", func(c *fiber.Ctx) error { return handler.UpdateRole(c) })
 	apiV1.Delete("/roles/:id", func(c *fiber.Ctx) error { return handler.DeleteRole(c) })
+
+	// Role service routes
+	apiV1.Get("/permissions", func(c *fiber.Ctx) error { return handler.GetPermissions(c) })
+	apiV1.Get("/permissions/:id", func(c *fiber.Ctx) error { return handler.GetPermission(c) })
+	apiV1.Post("/permissions", func(c *fiber.Ctx) error { return handler.CreatePermission(c) })
+	apiV1.Put("/permissions/:id", func(c *fiber.Ctx) error { return handler.UpdatePermission(c) })
+	apiV1.Delete("/permissions/:id", func(c *fiber.Ctx) error { return handler.DeletePermission(c) })
 }

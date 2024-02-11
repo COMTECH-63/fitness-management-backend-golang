@@ -33,9 +33,7 @@ func (r roleRepository) GetRolePaginate(ctx context.Context, span *sentry.Span, 
 	// Pagination query
 	if search != "" {
 		if err = r.db.Scopes(database.Paginate(roles, &pagination, r.db)).
-			Where(`email LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`first_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`last_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Where(`name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
 			Find(&roles).Error; err != nil {
 			log.Println(err)
 			return nil, errors.New("GetRolePaginateError")
@@ -67,6 +65,7 @@ func (r roleRepository) GetRoleByID(ctx context.Context, span *sentry.Span, id i
 	// if err = r.db.Preload("Roles").Preload("Permissions").Preload("Services").Preload("Classes").Preload("Orders").Preload("Bookings").Preload("BookingClasses").Preload("BookingPersonalTrainers").Find(&role, id).Error; err != nil {
 	// 	return role, err
 	// }
+
 	if err = r.db.Preload("Users").Preload("Permissions").Find(&role, id).Error; err != nil {
 		return role, err
 	}
@@ -94,13 +93,12 @@ func (r roleRepository) CreateRole(ctx context.Context, span *sentry.Span, role 
 
 func (r roleRepository) UpdateRole(ctx context.Context, span *sentry.Span, id int, role *models.Role) error {
 	var (
-		_, childSpan = tracing.Tracer.Start(ctx, "UpdateRoleRepository", trace.WithAttributes(attribute.String("repository", "UpdateRole")))
-		existRole    *models.Role
-		err          error
+		childSpan = span.StartChild("UpdateRoleRepository")
+		existRole *models.Role
 	)
 
 	// Get model
-	r.db.First(&existRole)
+	r.db.Find(&existRole, id)
 
 	// Clear existing associations
 	r.db.Model(&existRole).Association("Users").Clear()
@@ -113,16 +111,11 @@ func (r roleRepository) UpdateRole(ctx context.Context, span *sentry.Span, id in
 	existRole.Permissions = role.Permissions
 
 	// Execute
-	if err = r.db.Save(&existRole).Error; err != nil {
+	if err := r.db.Save(&existRole).Error; err != nil {
 		return err
 	}
 
-	// Execute
-	if err = r.db.Save(&existRole).Error; err != nil {
-		return err
-	}
-
-	childSpan.End()
+	childSpan.Finish()
 
 	return nil
 }

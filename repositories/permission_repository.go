@@ -8,7 +8,10 @@ import (
 
 	"github.com/COMTECH-63/fitness-management/database"
 	"github.com/COMTECH-63/fitness-management/models"
+	"github.com/COMTECH-63/fitness-management/pkg/tracing"
 	"github.com/getsentry/sentry-go"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
 )
 
@@ -22,25 +25,22 @@ func NewPermissionRepository(db *gorm.DB) PermissionRepository {
 
 func (r permissionRepository) GetPermissionPaginate(ctx context.Context, span *sentry.Span, pagination database.Pagination, search string) (*database.Pagination, error) {
 	var (
-		childSpan   = span.StartChild("GetPermissionPaginateRepository")
-		permissions []models.Permission
-		err         error
+		_, childSpan = tracing.Tracer.Start(ctx, "GetRolePaginateRepository", trace.WithAttributes(attribute.String("repository", "GetRolePaginate"), attribute.String("search", search)))
+		permissions  []models.Permission
+		err          error
 	)
 
 	// Pagination query
 	if search != "" {
 		if err = r.db.Scopes(database.Paginate(permissions, &pagination, r.db)).
-			Where(`email LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`first_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`last_name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
-			Or(`phone LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
+			Where(`name LIKE ?`, fmt.Sprintf(`%%%s%%`, search)).
 			Find(&permissions).Error; err != nil {
 			log.Println(err)
 			return nil, errors.New("GetPermissionPaginateError")
 		}
 	} else {
 		if err = r.db.Scopes(database.Paginate(permissions, &pagination, r.db)).
-			Preload("Teams").Preload("Roles").Preload("Permissions").Preload("Projects").Find(&permissions).Error; err != nil {
+			Preload("Roles").Preload("Users").Find(&permissions).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -48,28 +48,28 @@ func (r permissionRepository) GetPermissionPaginate(ctx context.Context, span *s
 	// Set data
 	pagination.Data = permissions
 
-	childSpan.Finish()
+	childSpan.End()
 
 	return &pagination, nil
 }
 
 func (r permissionRepository) GetPermissionByID(ctx context.Context, span *sentry.Span, id int) (models.Permission, error) {
 	var (
-		childSpan  = span.StartChild("GetPermissionByIDRepository")
-		permission models.Permission
-		err        error
+		_, childSpan = tracing.Tracer.Start(ctx, "GetRoleByIDRepository", trace.WithAttributes(attribute.String("repository", "GetRoleByID")))
+		permission   models.Permission
+		err          error
 	)
 
 	// Query
-	if err = r.db.First(&permission, id).Error; err != nil {
+	// if err = r.db.First(&permission, id).Error; err != nil {
+	// 	return permission, err
+	// }
+
+	if err = r.db.Preload("Roles").Preload("Users").Find(&permission, id).Error; err != nil {
 		return permission, err
 	}
 
-	if err = r.db.Preload("Teams").Preload("Roles").Preload("Permissions").Preload("Projects").Find(&permission).Error; err != nil {
-		return permission, err
-	}
-
-	childSpan.Finish()
+	childSpan.End()
 
 	return permission, nil
 }

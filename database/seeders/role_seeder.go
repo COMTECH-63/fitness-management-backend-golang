@@ -25,6 +25,11 @@ func NewRoleSeeder(db *gorm.DB) RoleSeeder {
 func (s roleSeeder) Seed() error {
 	log.Println("RoleSeeder running...")
 
+	var (
+		user       models.User
+		permission models.Permission
+	)
+
 	roles := []models.Role{
 		{
 			Name: "Member",
@@ -38,6 +43,11 @@ func (s roleSeeder) Seed() error {
 	}
 
 	result := s.db.Create(&roles)
+	s.db.Find(&user)
+	s.db.Find(&permission)
+
+	s.db.Model(&roles).Association("Users").Append(&user)
+	s.db.Model(&roles).Association("Permissions").Append(&permission)
 
 	log.Println("RoleSeeder seeded!")
 

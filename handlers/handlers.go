@@ -15,14 +15,16 @@ import (
 type (
 	// Register handler services
 	handler struct {
-		cacher      *cache.Cache
-		userService services.UserService
-		roleService services.RoleService
+		cacher            *cache.Cache
+		userService       services.UserService
+		roleService       services.RoleService
+		permissionService services.PermissionService
 	}
 	// Register handler interfaces
 	Handler interface {
 		UserHandler
 		RoleHandler
+		PermissionHandler
 	}
 )
 
@@ -30,11 +32,13 @@ func NewHandler(
 	cacher *cache.Cache,
 	userService services.UserService,
 	roleService services.RoleService,
+	permissionService services.PermissionService,
 ) handler {
 	return handler{
-		cacher:      cacher,
-		userService: userService,
-		roleService: roleService,
+		cacher:            cacher,
+		userService:       userService,
+		roleService:       roleService,
+		permissionService: permissionService,
 	}
 }
 

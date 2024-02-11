@@ -84,7 +84,8 @@ func (s roleService) UpdateRole(ctx context.Context, span *sentry.Span, id int, 
 
 		permission.ID = permissionDto.ID
 		role.Permissions = append(role.Permissions, permission)
-	}
+	} 
+	
 	err := s.roleRepository.UpdateRole(ctx, childSpan, id, role)
 	childSpan.Finish()
 

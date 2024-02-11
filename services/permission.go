@@ -42,8 +42,8 @@ type (
 		ID uint `json:"id" form:"id" query:"id" validate:"required"`
 	}
 	UpdatePermissionDto struct {
-		Name        string `json:"name" form:"name" query:"name" validate:"required,max:25"`
-		Description string `json:"description" form:"description" query:"description" validate:"required,max:50"`
+		Name        string `json:"name" form:"name" query:"name" validate:"required,max=25"`
+		Description string `json:"description" form:"description" query:"description" validate:"required,max=50"`
 
 		UserDtos []UpdatePermissionUserDto `json:"users" validate:"dive"`
 		RoleDtos []UpdatePermissionRoleDto `json:"roles" validate:"dive"`

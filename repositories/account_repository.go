@@ -94,7 +94,9 @@ func (r accountRepository) UpdateAccount(ctx context.Context, id int, account *m
 	)
 
 	// Get model
-	r.db.First(&existAccount)
+	r.db.Find(&existAccount, id)
+
+	r.db.Model(&existAccount).Association("Users").Clear()
 
 	// Set attributes
 	existAccount.Username = account.Username

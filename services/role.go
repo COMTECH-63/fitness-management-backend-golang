@@ -42,7 +42,7 @@ type (
 	}
 
 	UpdateRoleDto struct {
-		Name string `json:"name" form:"name" query:"name" validate:"required,max:10"`
+		Name string `json:"name" form:"name" query:"name" validate:"required,max=10"`
 
 		UserDtos       []UpdateRoleUserDto       `json:"users" validate:"dive"`
 		PermissionDtos []UpdateRolePermissionDto `json:"permissions" validate:"dive"`
