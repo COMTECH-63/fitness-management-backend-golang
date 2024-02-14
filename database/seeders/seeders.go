@@ -41,6 +41,11 @@ func RunSeed() {
 
 	seeder := NewSeeder(database.DBConn)
 
+	// Account seeder
+	if err = seeder.accountSeeder.Seed(); err != nil {
+		log.Fatal(err)
+	}
+
 	// Role seeder
 	if err = seeder.roleSeeder.Seed(); err != nil {
 		log.Fatal(err)
@@ -53,11 +58,6 @@ func RunSeed() {
 
 	// User seeder
 	if err = seeder.userSeeder.Seed(); err != nil {
-		log.Fatal(err)
-	}
-
-	// Account seeder
-	if err = seeder.accountSeeder.Seed(); err != nil {
 		log.Fatal(err)
 	}
 

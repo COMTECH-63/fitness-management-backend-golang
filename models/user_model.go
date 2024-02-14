@@ -28,6 +28,9 @@ type User struct {
 	ImageURL    string `json:"image_url"`
 	MemberID    string `json:"member_id"`
 
+	AccountID uint    `json:"account_id"`
+	Account   Account `json:"-"`
+
 	Roles                   []Role                   `json:"roles" gorm:"many2many:role_has_users;"`
 	Permissions             []Permission             `json:"permissions" gorm:"many2many:user_has_permissions;"`
 	Services                []Service                `json:"services" gorm:"many2many:service_has_users;"`

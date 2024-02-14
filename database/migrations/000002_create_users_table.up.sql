@@ -2,6 +2,7 @@ CREATE TYPE Sex AS ENUM ('male','female');
 
 CREATE TABLE IF NOT EXISTS users (
   id BIGSERIAL PRIMARY KEY,
+  account_id BIGSERIAL ,
   first_name VARCHAR (30) NOT NULL,
   last_name VARCHAR (50) NOT NULL,
   id_card VARCHAR (13) UNIQUE NOT NULL,
@@ -13,10 +14,12 @@ CREATE TABLE IF NOT EXISTS users (
   member_id VARCHAR (5) NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
-  deleted_at TIMESTAMP NULL
+  deleted_at TIMESTAMP NULL,
+  FOREIGN KEY (account_id) REFERENCES accounts (id)
 );
 -- comments
 COMMENT ON COLUMN users.id IS 'The user ID';
+COMMENT ON COLUMN users.account_id IS 'The account ID';
 COMMENT ON COLUMN users.first_name IS 'The user first name';
 COMMENT ON COLUMN users.last_name IS 'The user last name';
 COMMENT ON COLUMN users.id_card IS 'The user ID Card';

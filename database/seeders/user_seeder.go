@@ -28,6 +28,7 @@ func (s userSeeder) Seed() error {
 	var (
 		role       models.Role
 		permission models.Permission
+		account    models.Account
 		service    models.Service
 		// class                  models.Class
 		// order                  models.Order
@@ -47,6 +48,8 @@ func (s userSeeder) Seed() error {
 			Sex:         models.Male,
 			ImageURL:    "https://cdn.example.com/user/1/avatar.png",
 			MemberID:    "00000",
+
+			AccountID: 1,
 		},
 		{
 			FirstName:   "กานต์",
@@ -58,6 +61,8 @@ func (s userSeeder) Seed() error {
 			Sex:         models.Male,
 			ImageURL:    "https://cdn.example.com/user/2/avatar.png",
 			MemberID:    "00001",
+
+			AccountID: 2,
 		},
 		{
 			FirstName:   "ภีมพศ",
@@ -69,6 +74,8 @@ func (s userSeeder) Seed() error {
 			Sex:         models.Male,
 			ImageURL:    "https://cdn.example.com/user/3/avatar.png",
 			MemberID:    "00002",
+
+			AccountID: 3,
 		},
 		{
 			FirstName:   "ธนโชค",
@@ -80,6 +87,8 @@ func (s userSeeder) Seed() error {
 			Sex:         models.Male,
 			ImageURL:    "https://cdn.example.com/user/4/avatar.png",
 			MemberID:    "00003",
+
+			AccountID: 4,
 		},
 	}
 
@@ -88,6 +97,7 @@ func (s userSeeder) Seed() error {
 	s.db.Find(&role)
 	s.db.Find(&permission)
 	s.db.Find(&service)
+	s.db.Find(&account)
 	// s.db.Find(class)
 	// s.db.Find(order)
 	// s.db.Find(booking)
@@ -96,6 +106,7 @@ func (s userSeeder) Seed() error {
 
 	s.db.Model(&users).Association("Roles").Append(&role)
 	s.db.Model(&users).Association("Permissions").Append(&permission)
+	s.db.Model(&users).Association("Accounts").Append(&account)
 	s.db.Model(&users).Association("Services").Append(&service)
 	// s.db.Model(&users[i]).Association("Classes").Append(&class)
 	// s.db.Model(&users[i]).Association("Orders").Append(&order)

@@ -40,6 +40,8 @@ type (
 		ImageURL    string `json:"image_url" form:"image_url" query:"image_url" validate:"required"`
 		MemberID    string `json:"member_id" form:"member_id" query:"member_id" validate:"required,max=5"`
 
+		AccountID uint `json:"account_id" form:"account_id" query:"account_id"`
+
 		RoleDtos       []CreateUserRoleDto       `json:"roles" validate:"dive"`
 		PermissionDtos []CreateUserPermissionDto `json:"permissions" validate:"dive"`
 		ServiceDtos    []CreateUserServiceDto    `json:"services" validate:"dive"`
@@ -67,6 +69,8 @@ type (
 		Sex         string `json:"sex" form:"sex" query:"sex" validate:"required"`
 		ImageURL    string `json:"image_url" form:"image_url" query:"image_url" validate:"required"`
 		MemberID    string `json:"member_id" form:"member_id" query:"member_id" validate:"required,max=5"`
+
+		AccountID uint `json:"account_id" form:"account_id" query:"account_id"`
 
 		RoleDtos       []UpdateUserRoleDto       `json:"roles" validate:"dive"`
 		PermissionDtos []UpdateUserPermissionDto `json:"permissions" validate:"dive"`

@@ -79,7 +79,7 @@ func (r userRepository) GetUserByID(ctx context.Context, span *sentry.Span, id i
 func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user *models.User) error {
 	var (
 		childSpan = span.StartChild("CreateUserRepository")
-		err          error
+		err       error
 	)
 
 	// Execute
@@ -95,11 +95,11 @@ func (r userRepository) CreateUser(ctx context.Context, span *sentry.Span, user 
 func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error {
 	var (
 		childSpan = span.StartChild("UpdateUserRepository")
-		existUser    *models.User
+		existUser *models.User
 	)
 
 	// Get model
-	r.db.Find(&existUser , id)
+	r.db.Find(&existUser, id)
 
 	// Clear existing associations
 	r.db.Model(&existUser).Association("Roles").Clear()
@@ -144,7 +144,7 @@ func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id in
 func (r userRepository) DeleteUser(ctx context.Context, span *sentry.Span, id int) error {
 	var (
 		childSpan = span.StartChild("DeleteUserRepository")
-		err          error
+		err       error
 	)
 
 	// Execute

@@ -1,13 +1,11 @@
 -- create accounts table
 CREATE TABLE IF NOT EXISTS accounts (
   id BIGSERIAL PRIMARY KEY,
-  user_id BIGSERIAL ,
   username VARCHAR (55) NOT NULL,
   password VARCHAR (50) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP NULL,
-  FOREIGN KEY (user_id) REFERENCES users (id)
+  deleted_at TIMESTAMP NULL
 );
 -- comment to accounts table
 COMMENT ON COLUMN accounts.id IS 'ID ของ Permission';

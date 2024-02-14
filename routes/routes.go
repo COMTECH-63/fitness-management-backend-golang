@@ -69,12 +69,19 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	// Initialize services
 	permissionService := services.NewPermissionService(permissionRepo)
 
+	// Initialize repositories, services, and handlers
+	accountRepo := repositories.NewAccountRepository(database.DBConn)
+
+	// Initialize services
+	accountService := services.NewAccountService(accountRepo)
+
 	// Initialize handlers
 	handler := handlers.NewHandler(
 		cache.Cacher,
 		userService,
 		roleService,
 		permissionService,
+		accountService,
 	)
 
 	// REST API endpoint ------------------------------------------------------------------
@@ -97,10 +104,17 @@ func HTTPRoutes(ms *microservices.Microservice) {
 	apiV1.Put("/roles/:id", func(c *fiber.Ctx) error { return handler.UpdateRole(c) })
 	apiV1.Delete("/roles/:id", func(c *fiber.Ctx) error { return handler.DeleteRole(c) })
 
-	// Role service routes
+	// Permission service routes
 	apiV1.Get("/permissions", func(c *fiber.Ctx) error { return handler.GetPermissions(c) })
 	apiV1.Get("/permissions/:id", func(c *fiber.Ctx) error { return handler.GetPermission(c) })
 	apiV1.Post("/permissions", func(c *fiber.Ctx) error { return handler.CreatePermission(c) })
 	apiV1.Put("/permissions/:id", func(c *fiber.Ctx) error { return handler.UpdatePermission(c) })
 	apiV1.Delete("/permissions/:id", func(c *fiber.Ctx) error { return handler.DeletePermission(c) })
+
+	// Account service routes
+	apiV1.Get("/accounts", func(c *fiber.Ctx) error { return handler.GetAccounts(c) })
+	apiV1.Get("/accounts/:id", func(c *fiber.Ctx) error { return handler.GetAccount(c) })
+	apiV1.Post("/accounts", func(c *fiber.Ctx) error { return handler.CreateAccount(c) })
+	apiV1.Put("/accounts/:id", func(c *fiber.Ctx) error { return handler.UpdateAccount(c) })
+	apiV1.Delete("/accounts/:id", func(c *fiber.Ctx) error { return handler.DeleteAccount(c) })
 }

@@ -56,6 +56,8 @@ func (s userService) CreateUser(ctx context.Context, span *sentry.Span, userDto 
 	user.ImageURL = userDto.ImageURL
 	user.MemberID = userDto.MemberID
 
+	user.AccountID = userDto.AccountID
+
 	for _, roleDto := range userDto.RoleDtos {
 		var role models.Role
 
@@ -98,6 +100,8 @@ func (s userService) UpdateUser(ctx context.Context, span *sentry.Span, id int, 
 	user.Address = userDto.Address
 	user.ImageURL = userDto.ImageURL
 	user.MemberID = userDto.MemberID
+
+	user.AccountID = userDto.AccountID
 
 	for _, roleDto := range userDto.RoleDtos {
 		var role models.Role
