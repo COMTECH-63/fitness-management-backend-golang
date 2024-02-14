@@ -7,6 +7,7 @@ import (
 	"github.com/COMTECH-63/fitness-management/models"
 	"github.com/COMTECH-63/fitness-management/repositories"
 	"github.com/getsentry/sentry-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type (
@@ -39,13 +40,25 @@ func (s accountService) GetAccount(ctx context.Context, span *sentry.Span, id in
 }
 
 func (s accountService) CreateAccount(ctx context.Context, span *sentry.Span, accountDto *AccountDto) error {
+
 	childSpan := span.StartChild("CreateAccountService")
 	account := new(models.Account)
 
 	account.Username = accountDto.Username
 	account.Password = accountDto.Password
 
-	err := s.accountRepository.CreateAccount(ctx, childSpan, account)
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(account.Password), bcrypt.DefaultCost)
+	if err != nil {
+		// Handle error (e.g., log, return an error, etc.)
+		childSpan.Finish()
+		return err
+	}
+
+	// Set the hashed password in the account model
+	account.Password = string(hashedPassword)
+
+	err = s.accountRepository.CreateAccount(ctx, childSpan, account)
 	childSpan.Finish()
 
 	return err

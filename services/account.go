@@ -18,6 +18,6 @@ type (
 
 	AccountDto struct {
 		Username string `json:"username" form:"username" query:"username" validate:"required,max=55"`
-		Password string `json:"password" form:"password" query:"password" validate:"required,max=50"`
+		Password string `json:"password" form:"password" query:"password" validate:"required,max=100"`
 	}
 )
