@@ -13,6 +13,7 @@ type (
 		GetUser(ctx context.Context, span *sentry.Span, id int) (map[string]interface{}, error)
 		CreateUser(ctx context.Context, span *sentry.Span, userDto *CreateUserDto) error
 		UpdateUser(ctx context.Context, span *sentry.Span, id int, userDto *UpdateUserDto) error
+		UpdatePasswordUser(ctx context.Context, span *sentry.Span, id int, userDto *UpdatePasswordUserdDto) error
 		DeleteUser(ctx context.Context, span *sentry.Span, id int) error
 	}
 
@@ -30,6 +31,8 @@ type (
 	}
 
 	CreateUserDto struct {
+		Username    string `json:"username" form:"username" query:"username" validate:"required,max=55"`
+		Password    string `json:"password" form:"password" query:"password" validate:"required,max=100"`
 		FirstName   string `json:"first_name" form:"first_name" query:"first_name" validate:"required,max=30"`
 		LastName    string `json:"last_name" form:"last_name" query:"last_name" validate:"required,max=50"`
 		IDCard      string `json:"id_card" form:"id_card" query:"id_card" validate:"required,max=13"`
@@ -39,8 +42,6 @@ type (
 		Sex         string `json:"sex" form:"sex" query:"sex" validate:"required"`
 		ImageURL    string `json:"image_url" form:"image_url" query:"image_url" validate:"required"`
 		MemberID    string `json:"member_id" form:"member_id" query:"member_id" validate:"required,max=5"`
-
-		AccountID uint `json:"account_id" form:"account_id" query:"account_id"`
 
 		RoleDtos       []CreateUserRoleDto       `json:"roles" validate:"dive"`
 		PermissionDtos []CreateUserPermissionDto `json:"permissions" validate:"dive"`
@@ -60,6 +61,8 @@ type (
 	}
 
 	UpdateUserDto struct {
+		// Username    string `json:"username" form:"username" query:"username" validate:"required,max=55"`
+		// Password    string `json:"password" form:"password" query:"password" validate:"required,max=100"`
 		FirstName   string `json:"first_name" form:"first_name" query:"first_name" validate:"required,max=30"`
 		LastName    string `json:"last_name" form:"last_name" query:"last_name" validate:"required,max=50"`
 		IDCard      string `json:"id_card" form:"id_card" query:"id_card" validate:"required,max=13"`
@@ -70,10 +73,13 @@ type (
 		ImageURL    string `json:"image_url" form:"image_url" query:"image_url" validate:"required"`
 		MemberID    string `json:"member_id" form:"member_id" query:"member_id" validate:"required,max=5"`
 
-		AccountID uint `json:"account_id" form:"account_id" query:"account_id"`
-
 		RoleDtos       []UpdateUserRoleDto       `json:"roles" validate:"dive"`
 		PermissionDtos []UpdateUserPermissionDto `json:"permissions" validate:"dive"`
 		ServiceDtos    []UpdateUserServiceDto    `json:"services" validate:"dive"`
+	}
+
+	UpdatePasswordUserdDto struct {
+		Username string `json:"username" form:"username" query:"username" validate:"required,max=55"`
+		Password string `json:"password" form:"password" query:"password" validate:"required,max=100"`
 	}
 )

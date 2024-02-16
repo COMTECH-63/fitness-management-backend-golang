@@ -7,6 +7,7 @@ import (
 	"github.com/COMTECH-63/fitness-management/models"
 	"github.com/COMTECH-63/fitness-management/repositories"
 	"github.com/getsentry/sentry-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type (
@@ -47,6 +48,7 @@ func (s userService) CreateUser(ctx context.Context, span *sentry.Span, userDto 
 	// receiver method
 	user.SetSex(userDto.Sex)
 
+	user.Username = userDto.Username
 	user.FirstName = userDto.FirstName
 	user.LastName = userDto.LastName
 	user.IDCard = userDto.IDCard
@@ -56,7 +58,13 @@ func (s userService) CreateUser(ctx context.Context, span *sentry.Span, userDto 
 	user.ImageURL = userDto.ImageURL
 	user.MemberID = userDto.MemberID
 
-	user.AccountID = userDto.AccountID
+	// Hash the password before storing it
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
+	if err != nil {
+		// Handle error (log, return, etc.)
+		return err
+	}
+	user.Password = string(hashedPassword)
 
 	for _, roleDto := range userDto.RoleDtos {
 		var role models.Role
@@ -79,7 +87,7 @@ func (s userService) CreateUser(ctx context.Context, span *sentry.Span, userDto 
 		user.Services = append(user.Services, service)
 	}
 
-	err := s.userRepository.CreateUser(ctx, childSpan, user)
+	err = s.userRepository.CreateUser(ctx, childSpan, user)
 	childSpan.Finish()
 
 	return err
@@ -92,6 +100,7 @@ func (s userService) UpdateUser(ctx context.Context, span *sentry.Span, id int, 
 	// receiver method
 	user.SetSex(userDto.Sex)
 
+	// user.Username = userDto.Username
 	user.FirstName = userDto.FirstName
 	user.LastName = userDto.LastName
 	user.IDCard = userDto.IDCard
@@ -101,7 +110,15 @@ func (s userService) UpdateUser(ctx context.Context, span *sentry.Span, id int, 
 	user.ImageURL = userDto.ImageURL
 	user.MemberID = userDto.MemberID
 
-	user.AccountID = userDto.AccountID
+	// Hash the password only if it is provided in the update request
+	// if userDto.Password != "" {
+	// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
+	// 	if err != nil {
+	// 		// Handle error (log, return, etc.)
+	// 		return err
+	// 	}
+	// 	user.Password = string(hashedPassword)
+	// }
 
 	for _, roleDto := range userDto.RoleDtos {
 		var role models.Role
@@ -125,6 +142,29 @@ func (s userService) UpdateUser(ctx context.Context, span *sentry.Span, id int, 
 	}
 
 	err := s.userRepository.UpdateUser(ctx, childSpan, id, user)
+	childSpan.Finish()
+
+	return err
+}
+
+func (s userService) UpdatePasswordUser(ctx context.Context, span *sentry.Span, id int, userDto *UpdatePasswordUserdDto) error {
+	childSpan := span.StartChild("UpdatePasswordUserService")
+	user := new(models.User)
+
+	user.Username = userDto.Username
+	user.Password = userDto.Password
+
+	// Hash the password only if it is provided in the update request
+	if userDto.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
+		if err != nil {
+			// Handle error (log, return, etc.)
+			return err
+		}
+		user.Password = string(hashedPassword)
+	}
+
+	err := s.userRepository.UpdatePasswordUser(ctx, childSpan, id, user)
 	childSpan.Finish()
 
 	return err

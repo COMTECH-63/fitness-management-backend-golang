@@ -14,6 +14,7 @@ type (
 		GetUserByID(ctx context.Context, span *sentry.Span, id int) (models.User, error)
 		CreateUser(ctx context.Context, span *sentry.Span, user *models.User) error
 		UpdateUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error
+		UpdatePasswordUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error
 		DeleteUser(ctx context.Context, span *sentry.Span, id int) error
 	}
 )

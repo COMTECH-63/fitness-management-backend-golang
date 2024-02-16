@@ -19,14 +19,12 @@ type (
 		userService       services.UserService
 		roleService       services.RoleService
 		permissionService services.PermissionService
-		accountService    services.AccountService
 	}
 	// Register handler interfaces
 	Handler interface {
 		UserHandler
 		RoleHandler
 		PermissionHandler
-		AccountHandler
 	}
 )
 
@@ -35,14 +33,12 @@ func NewHandler(
 	userService services.UserService,
 	roleService services.RoleService,
 	permissionService services.PermissionService,
-	accountService services.AccountService,
 ) handler {
 	return handler{
 		cacher:            cacher,
 		userService:       userService,
 		roleService:       roleService,
 		permissionService: permissionService,
-		accountService:    accountService,
 	}
 }
 

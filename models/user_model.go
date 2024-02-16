@@ -18,6 +18,8 @@ func (u *User) SetSex(value string) {
 
 type User struct {
 	Model
+	Username    string `json:"username"`
+	Password    string `json:"password"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	IDCard      string `json:"id_card"`
@@ -27,9 +29,6 @@ type User struct {
 	Sex         Sex    `json:"sex"`
 	ImageURL    string `json:"image_url"`
 	MemberID    string `json:"member_id"`
-
-	AccountID uint    `json:"account_id"`
-	Account   Account `json:"-"`
 
 	Roles                   []Role                   `json:"roles" gorm:"many2many:role_has_users;"`
 	Permissions             []Permission             `json:"permissions" gorm:"many2many:user_has_permissions;"`

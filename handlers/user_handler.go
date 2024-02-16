@@ -18,6 +18,7 @@ type (
 		GetUser(c *fiber.Ctx) error
 		CreateUser(c *fiber.Ctx) error
 		UpdateUser(c *fiber.Ctx) error
+		UpdatePasswordUser(c *fiber.Ctx) error
 		DeleteUser(c *fiber.Ctx) error
 	}
 )
@@ -135,6 +136,45 @@ func (h handler) UpdateUser(c *fiber.Ctx) error {
 
 	// Call service function
 	err := h.userService.UpdateUser(c.Context(), span, id, userDto)
+	if err != nil {
+		utils.HandleErrors(err)
+		return err
+	}
+
+	// Clear user cache
+	cache.Cacher.Tag("users").Flush(c.Context())
+
+	span.Finish()
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"code":    "0",
+		"message": "OK",
+	})
+}
+
+func (h handler) UpdatePasswordUser(c *fiber.Ctx) error {
+	var (
+		span = sentry.StartSpan(c.Context(), "UpdateUserHandler", sentry.WithTransactionName("UpdateUser"))
+	)
+
+	// Get route parameter
+	id, _ := c.ParamsInt("id")
+
+	// Create data transfer object
+	userDto := new(services.UpdatePasswordUserdDto)
+
+	// Parse HTTP request body to struct variable
+	if err := c.BodyParser(userDto); err != nil {
+		return err
+	}
+
+	// Form request validation
+	errors := utils.Validate(*userDto)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
+	}
+
+	// Call service function
+	err := h.userService.UpdatePasswordUser(c.Context(), span, id, userDto)
 	if err != nil {
 		utils.HandleErrors(err)
 		return err

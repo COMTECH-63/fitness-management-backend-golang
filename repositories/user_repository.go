@@ -112,6 +112,8 @@ func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id in
 	// r.db.Model(&existUser).Association("BookingPersonalTrainers").Clear()
 
 	// Set attributes
+	// existUser.Username = user.Username
+	// existUser.Password = user.Password
 	existUser.FirstName = user.FirstName
 	existUser.LastName = user.LastName
 	existUser.IDCard = user.IDCard
@@ -130,6 +132,29 @@ func (r userRepository) UpdateUser(ctx context.Context, span *sentry.Span, id in
 	// existUser.Bookings = user.Bookings
 	// existUser.BookingClasses = user.BookingClasses
 	// existUser.BookingPersonalTrainers = user.BookingPersonalTrainers
+
+	// Execute
+	if err := r.db.Save(&existUser).Error; err != nil {
+		return err
+	}
+
+	childSpan.Finish()
+
+	return nil
+}
+
+func (r userRepository) UpdatePasswordUser(ctx context.Context, span *sentry.Span, id int, user *models.User) error {
+	var (
+		childSpan = span.StartChild("UpdateUserRepository")
+		existUser *models.User
+	)
+
+	// Get model
+	r.db.Find(&existUser, id)
+
+	// Set attributes
+	existUser.Username = user.Username
+	existUser.Password = user.Password
 
 	// Execute
 	if err := r.db.Save(&existUser).Error; err != nil {

@@ -9,7 +9,6 @@ import (
 
 type seeder struct {
 	userSeeder       UserSeeder
-	accountSeeder    AccountSeeder
 	roleSeeder       RoleSeeder
 	permissionSeeder PermissionSeeder
 	serviceSeeder    ServiceSeeder
@@ -20,14 +19,12 @@ func NewSeeder(
 ) seeder {
 
 	userSeeder := NewUserSeeder(db)
-	accountSeeder := NewAccountSeeder(db)
 	roleSeeder := NewRoleSeeder(db)
 	permissionSeeder := NewPermissionSeeder(db)
 	serviceSeeder := NewServiceSeeder(db)
 
 	return seeder{
 		userSeeder:       userSeeder,
-		accountSeeder:    accountSeeder,
 		roleSeeder:       roleSeeder,
 		permissionSeeder: permissionSeeder,
 		serviceSeeder:    serviceSeeder,
@@ -40,11 +37,6 @@ func RunSeed() {
 	database.DBConn = database.Initialize()
 
 	seeder := NewSeeder(database.DBConn)
-
-	// Account seeder
-	if err = seeder.accountSeeder.Seed(); err != nil {
-		log.Fatal(err)
-	}
 
 	// Role seeder
 	if err = seeder.roleSeeder.Seed(); err != nil {
