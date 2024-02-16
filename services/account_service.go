@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	"errors"
 
 	"github.com/COMTECH-63/fitness-management/database"
 	"github.com/COMTECH-63/fitness-management/models"
 	"github.com/COMTECH-63/fitness-management/repositories"
 	"github.com/getsentry/sentry-go"
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -66,12 +68,35 @@ func (s accountService) CreateAccount(ctx context.Context, span *sentry.Span, ac
 
 func (s accountService) UpdateAccount(ctx context.Context, span *sentry.Span, id int, accountDto *AccountDto) error {
 	childSpan := span.StartChild("UpdateAccountService")
-	account := new(models.Account)
 
-	account.Username = accountDto.Username
-	account.Password = accountDto.Password
+	// Retrieve the existing account from the repository
+	existingAccount, err := s.accountRepository.GetAccountByID(ctx, childSpan, id)
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			// Handle the case where the account does not exist
+			childSpan.Finish()
+			return errors.New("account not found")
+		}
+		childSpan.Finish()
+		return err
+	}
 
-	err := s.accountRepository.UpdateAccount(ctx, childSpan, id, account)
+	// Update fields from the DTO
+	existingAccount.Username = accountDto.Username
+
+	// Check if a new password is provided
+	if accountDto.Password != "" {
+		// Hash the new password
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(accountDto.Password), bcrypt.DefaultCost)
+		if err != nil {
+			childSpan.Finish()
+			return err
+		}
+		existingAccount.Password = string(hashedPassword)
+	}
+
+	// Update the account in the repository
+	err = s.accountRepository.UpdateAccount(ctx, childSpan, id, &existingAccount)
 	childSpan.Finish()
 
 	return err
